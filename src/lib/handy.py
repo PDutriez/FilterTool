@@ -90,7 +90,7 @@ def save_filter(data,new,new_format, convert=True):
     if convert:
         convert_filter(data,new_format)
 #-----------------------------------------------------
-def convert_filter(data,new_format):
+#def convert_filter(data,new_format):
 
 #-----------------------------------------------------
 def resp(a=1,b=1,N=0,step = False):
@@ -101,18 +101,16 @@ def resp(a=1,b=1,N=0,step = False):
     :param N: Numero de puntos a calcular    
     :return: 
     """
-    if N=0: N=100
+    if N==0: N=100
     H = ss.lti(a,b)
     if step == True:
         time, resp = H.step(N=N)
     else:
         time, resp = H.impulse(N=N)
 
-
-
     return time, resp
 #-----------------------------------------------------
-def gropu_delay(a=1,b=1,nfft=512,whole=False)
+def gropu_delay(a=1,b=1,nfft=512,whole=False):
     w, gd = ss.group_delay((a, b), w=nfft, whole=whole)
     return w, gd
 #-----------------------------------------------------
@@ -120,3 +118,5 @@ def gropu_delay(a=1,b=1,nfft=512,whole=False)
 #-----------------------------------------------------
 if __name__=='__main__':
     pass
+
+#    pass
