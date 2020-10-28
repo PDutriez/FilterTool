@@ -4,13 +4,19 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import designer.output as ou
+import sys
+
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    app = ou.QtWidgets.QApplication(sys.argv)
+    MainWindow = ou.QtWidgets.QWidget()
+    ui = ou.Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
