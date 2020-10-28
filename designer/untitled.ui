@@ -15,7 +15,19 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <layout class="QVBoxLayout" name="CreateZone">
+    <layout class="QVBoxLayout" name="CreateZone" stretch="0,0,0,0,0,0">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <item>
       <layout class="QHBoxLayout" name="SaveLoad">
        <property name="spacing">
@@ -102,10 +114,77 @@
      <item>
       <layout class="QHBoxLayout" name="FiltersOptions">
        <item>
-        <widget class="QComboBox" name="CBFilters"/>
+        <widget class="QComboBox" name="CBFilters">
+         <item>
+          <property name="text">
+           <string>Aproximación</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Butterworth</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Chebyshev 1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Chebyshev 2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Bessel</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Legendre</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Gauss</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Cauer</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="CBAprox"/>
+        <widget class="QComboBox" name="CBAprox">
+         <item>
+          <property name="text">
+           <string>Tipo de Filtro</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BR</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </item>
@@ -234,7 +313,18 @@
         </widget>
        </item>
        <item row="0" column="3">
-        <widget class="QComboBox" name="CBAmpUnit"/>
+        <widget class="QComboBox" name="CBAmpUnit">
+         <item>
+          <property name="text">
+           <string>dB</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>unit</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item row="1" column="3">
         <widget class="QDoubleSpinBox" name="SpinBoxGain"/>
@@ -268,7 +358,23 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="CBFreqUnit"/>
+        <widget class="QComboBox" name="CBFreqUnit">
+         <item>
+          <property name="text">
+           <string>Hz</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>kHz</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MHz</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item row="1" column="2">
         <widget class="QLabel" name="label_7">
@@ -294,7 +400,50 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="GraphZone"/>
+    <layout class="QVBoxLayout" name="GraphZone">
+     <item>
+      <widget class="QTabWidget" name="GraphsWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="MagTab">
+        <attribute name="title">
+         <string>Magnitud</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="AtenTab">
+        <attribute name="title">
+         <string>Atenuación</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="FaseTab">
+        <attribute name="title">
+         <string>Fase</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RetGrupTab">
+        <attribute name="title">
+         <string>Ret. Grupo</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>P and Z</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RespImpTab">
+        <attribute name="title">
+         <string>Resp. Imp.</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RespEscTab">
+        <attribute name="title">
+         <string>Resp. Esc.</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
