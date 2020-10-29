@@ -13,10 +13,11 @@ from src.filters_aproxs.cauer import Cauer
 
 class UniFilter(object):
 
-    def __init__(self,params):
+    def __init__(self):
         super(UniFilter,self).__init__()
+        self.Filtro = None
 
-    def get_params(self,data):
+    def make_filter(self,data):
         filtros = {
             'Butterworth': Butter
             , 'Chebyshev 1': Cheby1
@@ -28,7 +29,22 @@ class UniFilter(object):
         }
         if data['aprox'] not in filtros.keys():
             print('ERROR: UniFilter - Aproximación errónea')
+        elif data['ft'] != "Tipo de Filtro":
+            print('ERROR: UniFilter - No se selecciono un Tipo de Filtro')
+        elif not filtros[data['aprox']].test_N(data):
+            print('ERROR: UniFilter - Orden mal cargado')
         else:
-            filtros[data['aprox']].get_params(data)
+            self.Filtro = filtros[data['aprox']]
+            if data['ft'] == 'LP':
+                self.Filtro.LP(data)
+            elif data['ft'] == 'HP':
+                self.Filtro.HP(data)
+            elif data['ft'] == 'BP':
+                self.Filtro.BP(data)
+            elif data['ft'] == 'BR':
+                self.Filtro.BR(data)
 
+# ------------------------------------------------------------
+if __name__ == '__main__':
+    pass
 

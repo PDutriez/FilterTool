@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas, \
     NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
-from src import UniFilter
+from src import UniFilter as UF
 
 
 
@@ -26,21 +26,21 @@ class AppCLass(QtWidgets.QWidget):
         #la idea es que no muestre todas las fpp... y App... dependiendo del filtro
         filtro = self.ui.CBAprox.currentText()
         if filtro == 'LP':
-            print(filtro)
+            #print(filtro)
         elif filtro == 'HP':
-            print(filtro)
+            #print(filtro)
         elif filtro == 'BP':
-            print(filtro)
+            #print(filtro)
         elif filtro == 'BR':
-            print(filtro)
+            #print(filtro)
         else:
             print('Filtro Incorrecto')
 
     def CreateNew(self):
         #botón de crear un filtro nuevo
         if self.specs_ok():  # Todos los Specs estan bien
-            new_filter = UniFilter()
-            new_filter.get_params(self.parse_specs())
+            new_filter = UF.UniFilter()
+            new_filter.make_filter(self.parse_specs())
 
 
             print(new_filter)
@@ -141,6 +141,7 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_imp = self.figure_imp.add_subplot()
         self.axes_esc = self.figure_esc.add_subplot()
         self.axes_rdg = self.figure_rdg.add_subplot()
+        self.axes_fas = self.figure_fas.add_subplot()
 
 
 # ------------------------------------------------------------

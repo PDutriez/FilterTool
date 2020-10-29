@@ -14,10 +14,8 @@ class Butter(object):
 
     def __init__(self):
         super(Butter,self).__init__()
-
     #-------------------------------------------------
     def get_params(self, data):
-
         self.N   = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -25,17 +23,26 @@ class Butter(object):
         self.fam = data['fam']
         self.Ap  = data['Ap']
         self.Aa = data['Aa']
-        self.fc = None
+        self.fc = self.calc_crit(data)
         self.format  = 'sos'
+    # -------------------------------------------------
+    def calc_crit(self,data):
+        return 1/(data['E']**(self.N))
     #-------------------------------------------------
     def test_N(self):
-    """
-    Te avisa si el orden es demasiado alto para ser
-    un filtro razonable
-    """
+        """
+        Te avisa si el orden es demasiado alto para ser
+        un filtro razonable
+        """
+        ok_N = False
+        if self.N < 25:
+            ok_N = True
+        else:
+            print("N muy alto")
+        return ok_N
     #-------------------------------------------------
     def save(self, data, new):
-    save_filter(data, new)
+        save_filter(data, new)
 
     # ------------------------------------------------
     def LP(self,data):
