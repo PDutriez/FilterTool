@@ -36,12 +36,16 @@ class AppCLass(QtWidgets.QWidget):
     def CreateNew(self):
         if self.specs_ok():  # Todos los Specs estan bien
             new_filter = self.parse_specs()
+            print(new_filter)
         else:
             print("Los datos no se cargaron bien")
 
     def specs_ok(self):
         all_ok = False  # culpable hasta demostrar lo contrario
-        # verifica que los datos esten bien
+        if self.ui.CBFilters.currentText() != "Aproximación":
+            if self.ui.CBAprox.currentText() != "Tipo de Filtro":
+                all_ok = True
+
         return all_ok
 
     def parse_specs(self):
@@ -62,6 +66,8 @@ class AppCLass(QtWidgets.QWidget):
         else:
             filter['E'] = self.ui.SpinBoxDesnorm.value()
 
+        filter['aprox'] = self.ui.CBAprox.currentText()
+        filter['ft'] = self.ui.CBFilters.currentText()
         filter['Go'] = self.ui.SpinBoxGain.value()
         filter['fpp'] = self.ui.SpinBoxFpplus.value()
         filter['fpm'] = self.ui.SpinBoxFpminus.value()
