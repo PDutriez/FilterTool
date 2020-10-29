@@ -8,16 +8,18 @@ from src.filters_aproxs.cheby1 import Cheby1
 from src.filters_aproxs.cheby2 import Cheby2
 from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
+from src.lib.handy import test_N
 #from src.filters_aproxs.gauss import Butter
 #from src.filters_aproxs.legendre import Butter
 
-class UniFilter(object):
+class FilterMaker(object):
 
     def __init__(self):
-        super(UniFilter,self).__init__()
+        super(FilterMaker,self).__init__()
         self.Filtro = None
-
+        self.err_msg = ""
     def make_filter(self,data):
+        success = False
         filtros = {
             'Butterworth': Butter
             , 'Chebyshev 1': Cheby1
@@ -28,12 +30,13 @@ class UniFilter(object):
             , 'Cauer': Cauer
         }
         if data['aprox'] not in filtros.keys():
-            print('ERROR: UniFilter - Aproximación errónea')
+           self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
         elif data['ft'] != "Tipo de Filtro":
-            print('ERROR: UniFilter - No se selecciono un Tipo de Filtro')
-        elif not filtros[data['aprox']].test_N(data):
-            print('ERROR: UniFilter - Orden mal cargado')
+            self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro'
+        elif not test_N(data):
+            self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
         else:
+            success = True
             self.Filtro = filtros[data['aprox']]
             if data['ft'] == 'LP':
                 self.Filtro.LP(data)
@@ -43,6 +46,8 @@ class UniFilter(object):
                 self.Filtro.BP(data)
             elif data['ft'] == 'BR':
                 self.Filtro.BR(data)
+
+        return success
 
 # ------------------------------------------------------------
 if __name__ == '__main__':

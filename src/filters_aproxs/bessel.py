@@ -28,18 +28,6 @@ class Bessel(object):
         self.fc = None
         self.format  = 'sos'
     #-------------------------------------------------
-    def test_N(self):
-        """
-        Te avisa si el orden es demasiado alto para ser
-        un filtro razonable
-        """
-        ok_N = False
-        if self.N < 25:
-            ok_N = True
-        else:
-            print("N muy alto")
-        return ok_N
-    #-------------------------------------------------
     def save(self, data, new):
         save_filter(data, new)
 

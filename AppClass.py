@@ -20,43 +20,41 @@ class AppCLass(QtWidgets.QWidget):
 
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBAprox.currentIndexChanged.connect(self.change_ParamInputs)
-        self.ui.pushButton.clicked.connect(self.CreateNew)
+        self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
 
     def change_ParamInputs(self):
         #la idea es que no muestre todas las fpp... y App... dependiendo del filtro
         filtro = self.ui.CBAprox.currentText()
         if filtro == 'LP':
-            #print(filtro)
+            self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
         elif filtro == 'HP':
-            #print(filtro)
+            self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/HP.png"))
         elif filtro == 'BP':
-            #print(filtro)
+            self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BP.png"))
         elif filtro == 'BR':
-            #print(filtro)
+            self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BR.png"))
         else:
             print('Filtro Incorrecto')
 
     def CreateNew(self):
         #botón de crear un filtro nuevo
-        if self.specs_ok():  # Todos los Specs estan bien
-            new_filter = UF.UniFilter()
-            new_filter.make_filter(self.parse_specs())
-
-
-            print(new_filter)
+        bob = UF.FilterMaker()
+        new_filter = self.parse_specs() #creamos un nuevo filtro
+        if  not bob.make_filter(new_filter):
+            print(bob.err_msg)
         else:
-            print("Los datos no se cargaron bien")
-
-    def specs_ok(self):
-        all_ok = False  # culpable hasta demostrar lo contrario
-        if self.ui.CBFilters.currentText() != "Aproximación":
-            if self.ui.CBAprox.currentText() != "Tipo de Filtro":
-                all_ok = True
-
-        return all_ok
+            print(new_filter)
+            #ni idea que va acá
 
     def parse_specs(self):
+        """
+        Parsea los datos cargados, en caso de estar correctamente cargados,
+        crea un diccionario con el siguiente esqueleto:
+        filtro = {'N':X, 'Q':X.xx, 'E':X%, 'aprox':..., 'ft':..., 'Go':X.xx,
+                 'fpp':X.xx, 'fpm':X.xx, 'fap':X.xx, 'fam':X.xx, 'Ap':X.xx, 'Aa':X.xx }
+        """
         #cargamos todos los datos del filtro, supongo que fueron corroborados antes
+
         filter = {}
 
         if self.ui.CheckMinOrden.isChecked():

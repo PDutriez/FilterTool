@@ -84,7 +84,7 @@ def save_filter(data,new,new_format, convert=True):
         elif D < 0: # b > a llename de ceros b
             b = np.append(b, np.zeros(-D))
 
-        data['N'] = len(b) - 1 #Orden filtro
+        #data['N'] = len(b) - 1 #Orden filtro
         data['ba'] = [np.array(b, dtype=np.complex),
                       np.array(a, dtype=np.complex)]
     if convert:
@@ -92,6 +92,18 @@ def save_filter(data,new,new_format, convert=True):
 #-----------------------------------------------------
 #def convert_filter(data,new_format):
 
+#-----------------------------------------------------
+def test_N(data):
+    """
+    Te avisa si el orden es demasiado alto para ser
+    un filtro razonable
+    """
+    ok_N = False
+    if data['N'] < 25:
+        ok_N = True
+    else:
+        print("N muy alto")
+    return ok_N
 #-----------------------------------------------------
 def resp(a=1,b=1,N=0,step = False):
     """

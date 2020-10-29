@@ -17,7 +17,6 @@ class Cauer(object):
 
     #-------------------------------------------------
     def get_params(self,data):
-
         self.N   = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -28,21 +27,8 @@ class Cauer(object):
         self.fc = None
         self.format  = 'sos'
     #-------------------------------------------------
-    def test_N(self):
-        """
-        Te avisa si el orden es demasiado alto para ser
-        un filtro razonable
-        """
-        ok_N = False
-        if self.N < 25:
-            ok_N = True
-        else:
-            print("N muy alto")
-        return ok_N
-    #-------------------------------------------------
     def save(self, data, new):
         save_filter(data, new)
-
     #-------------------------------------------------
     def LP(self,data):
         self.get_params(data)
