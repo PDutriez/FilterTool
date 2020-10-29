@@ -1,5 +1,5 @@
 """
------------- APROXIMACIÓN DE CHEBYSHEV 1 ------------
+------------ APROXIMACIÓN DE BESSEL ------------
 Te hace de todito (LP,HP,BP,BR) con las condiciones
 de diseño clásicas (fp,fa,Ap,Aa) prorizando el orden
 preestablecido.
