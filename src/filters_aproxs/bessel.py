@@ -1,5 +1,5 @@
 """
------------- APROXIMACIÓN DE CHEBYSHEV 1 ------------
+------------ APROXIMACIÓN DE BESSEL ------------
 Te hace de todito (LP,HP,BP,BR) con las condiciones
 de diseño clásicas (fp,fa,Ap,Aa) prorizando el orden
 preestablecido.
@@ -12,7 +12,7 @@ from scipy.signal import buttord, bessel
 from src.lib.handy import save_filter, num2unit
 class Bessel(object):
 
-    def __init__(self:
+    def __init__(self):
         super(Bessel, self).__init__()
 
     #-------------------------------------------------
@@ -28,14 +28,8 @@ class Bessel(object):
         self.fc = None
         self.format  = 'sos'
     #-------------------------------------------------
-    def test_N(self):
-    """
-    Te avisa si el orden es demasiado alto para ser
-    un filtro razonable
-    """
-    #-------------------------------------------------
     def save(self, data, new):
-    save_filter(data, new)
+        save_filter(data, new)
 
     #-------------------------------------------------
     def LP(self,data):

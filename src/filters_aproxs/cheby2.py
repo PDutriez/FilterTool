@@ -12,7 +12,7 @@ from scipy.signal import cheb2ord, cheby2
 from src.lib.handy import save_filter, num2unit
 class Cheby2(object):
 
-    def __init__(self:
+    def __init__(self):
         super(Cheby2, self).__init__()
 
     #-------------------------------------------------
@@ -28,14 +28,8 @@ class Cheby2(object):
         self.fc = None
         self.format  = 'sos'
     #-------------------------------------------------
-    def test_N(self):
-    """
-    Te avisa si el orden es demasiado alto para ser
-    un filtro razonable
-    """
-    #-------------------------------------------------
     def save(self, data, new):
-    save_filter(data, new)
+        save_filter(data, new)
 
     #-------------------------------------------------
     def LP(self,data):
