@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas, \
     NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+import graficador as filterFactory
 
 
 class AppCLass(QtWidgets.QWidget):
@@ -15,6 +16,7 @@ class AppCLass(QtWidgets.QWidget):
         # MY STUFF
         self.createBodePlotsCanvas()
         self.plotDict = {}
+        self.filter_list = []
 
         # EVENT HANDLER
         self.ui.CBAprox.currentIndexChanged.connect(self.change_ParamInputs)
@@ -36,7 +38,8 @@ class AppCLass(QtWidgets.QWidget):
     def CreateNew(self):
         if self.specs_ok():  # Todos los Specs estan bien
             new_filter = self.parse_specs()
-            print(new_filter)
+            self.filter_list.append(filterFactory.newFilter(new_filter))   #Nace un plot nuevo
+            self.filter_list[-1].handlePlot(self)
         else:
             print("Los datos no se cargaron bien")
 
@@ -44,8 +47,23 @@ class AppCLass(QtWidgets.QWidget):
         all_ok = False  # culpable hasta demostrar lo contrario
         if self.ui.CBFilters.currentText() != "Aproximación":
             if self.ui.CBAprox.currentText() != "Tipo de Filtro":
-                all_ok = True
-
+                if self.ui.SpinBoxGain.value() != 0:
+                    if self.ui.SpinBoxFpplus.value() != 0:
+                        if self.ui.SpinBoxFpminus.value() != 0:
+                            if self.ui.SpinBoxFaplus.value() != 0:
+                                if self.ui.SpinBoxFaminus.value()!= 0:
+                                    if self.ui.SpinBoxAp.value() != 0:
+                                        if self.ui.SpinBoxAa.value() != 0:
+                                            all_ok = True
+                                        else: print("Aa no puede valer 0")
+                                    else: print("Ap no puede valer 0")
+                                else: print("fam no puede valer 0")
+                            else: print("fap no puede valer 0")
+                        else: print("fpminus no puede valer 0")
+                    else: print("fpplus no puede valer 0")
+                else: print("Gain no puede valer 0")
+            else: print("Elija el tipo de filtro")
+        else: print("Elija el tipo de aproximacion")
         return all_ok
 
     def parse_specs(self):
