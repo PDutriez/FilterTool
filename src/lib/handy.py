@@ -2,6 +2,23 @@ import numpy as np
 from numpy import pi, log10
 import scipy.signal as ss
 
+import pandas as pd
+
+
+def save_data(data):
+    df = pd.DataFrame.from_dict(data, orient="index")
+    df.to_csv("data/last_data.csv")
+
+    # pd.DataFrame.from_dict(data=data, orient='columns').to_csv('/data/last_data.csv', header=False)
+
+
+def read_data():
+    df = pd.read_csv("data/last_data.csv", index_col=0)
+    d = df.to_dict("split")
+    d = dict(zip(d["index"], d["data"]))
+    return d
+
+
 __all__ = ['qstr2str','change2unit','save_filter']
 
 def qstr2str(text):

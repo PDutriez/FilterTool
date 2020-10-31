@@ -5,13 +5,13 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from src import UniFilter as UF
-
+from src.lib import handy as hand
 import graficador as filterFactory
 
 
 class AppCLass(QtWidgets.QWidget):
 
-    def __init__(self, parent=None): #instanciamos la clase
+    def __init__(self, parent=None):  # instanciamos la clase
         super(AppCLass, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -19,13 +19,15 @@ class AppCLass(QtWidgets.QWidget):
         self.createBodePlotsCanvas()
         self.plotDict = {}
         self.filter_list = []
+        if hand.read_data():
+            self.recover(hand.read_data())
 
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
 
     def change_ParamInputs(self):
-        #la idea es que no muestre todas las fpp... y App... dependiendo del filtro
+        # la idea es que no muestre todas las fpp... y App... dependiendo del filtro
         filtro = self.ui.CBFilters.currentText()
         if filtro == 'LP':
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
@@ -43,15 +45,15 @@ class AppCLass(QtWidgets.QWidget):
             print('Filtro Incorrecto')
 
     def CreateNew(self):
-        #botón de crear un filtro nuevo
+        # botón de crear un filtro nuevo
         bob = UF.FilterMaker()
-        new_filter = self.parse_specs() #creamos un nuevo filtro
-        if  not bob.make_filter(new_filter):
+        new_filter = self.parse_specs()  # creamos un nuevo filtro
+        if not bob.make_filter(new_filter):
             print(bob.err_msg)
         else:
             self.filter_list.append(bob)  # Nace un plot nuevo
             self.filter_list[-1].handlePlot(self)
-            #ni idea que va acá
+            # ni idea que va acá
 
     def parse_specs(self):
         """
@@ -60,7 +62,7 @@ class AppCLass(QtWidgets.QWidget):
         filtro = {'N':X, 'Q':X.xx, 'E':X%, 'aprox':..., 'ft':..., 'Go':X.xx,
                  'fpp':X.xx, 'fpm':X.xx, 'fap':X.xx, 'fam':X.xx, 'Ap':X.xx, 'Aa':X.xx }
         """
-        #cargamos todos los datos del filtro, supongo que fueron corroborados antes
+        # cargamos todos los datos del filtro, supongo que fueron corroborados antes
 
         filter = {}
 
@@ -89,10 +91,26 @@ class AppCLass(QtWidgets.QWidget):
         filter['Ap'] = self.ui.SpinBoxAp.value()
         filter['Aa'] = self.ui.SpinBoxAa.value()
 
+        hand.save_data(filter)
         return filter
 
+    def recover(self,data):
+        self.ui.NumOrden.setValue(int(data['N'][0]))
+        self.ui.SpinBoxQ.setValue(float(data['Q'][0]))
+        self.ui.SpinBoxDesnorm.setValue(int(data['E'][0]))
+        self.ui.CBAprox.setCurrentText((data['aprox'][0]))
+        self.ui.CBFilters.setCurrentText(data['ft'][0])
+        self.ui.SpinBoxGain.setValue(float(data['Go'][0]))
+        self.ui.SpinBoxFpplus.setValue(float(data['fpp'][0]))
+        self.ui.SpinBoxFpminus.setValue(float(data['fpm'][0]))
+        self.ui.SpinBoxFaplus.setValue(float(data['fap'][0]))
+        self.ui.SpinBoxFaminus.setValue(float(data['fam'][0]))
+        self.ui.SpinBoxAp.setValue(float(data['Ap'][0]))
+        self.ui.SpinBoxAa.setValue(float(data['Aa'][0]))
+
+
     def createBodePlotsCanvas(self):
-        #creo una figura por pestaña
+        # creo una figura por pestaña
         self.figure_mag = Figure()
         self.figure_ate = Figure()
         self.figure_paz = Figure()
@@ -100,7 +118,7 @@ class AppCLass(QtWidgets.QWidget):
         self.figure_rdg = Figure()
         self.figure_imp = Figure()
         self.figure_esc = Figure()
-        #le creo un canvas a la figura
+        # le creo un canvas a la figura
         self.canvas_mag = FigureCanvas(self.figure_mag)
         self.canvas_ate = FigureCanvas(self.figure_ate)
         self.canvas_paz = FigureCanvas(self.figure_paz)
@@ -108,7 +126,7 @@ class AppCLass(QtWidgets.QWidget):
         self.canvas_rdg = FigureCanvas(self.figure_rdg)
         self.canvas_imp = FigureCanvas(self.figure_imp)
         self.canvas_esc = FigureCanvas(self.figure_esc)
-        #necesito algo donde poner el canvas
+        # necesito algo donde poner el canvas
         plot_layout_mag = QtWidgets.QVBoxLayout()
         plot_layout_ate = QtWidgets.QVBoxLayout()
         plot_layout_paz = QtWidgets.QVBoxLayout()
@@ -116,7 +134,7 @@ class AppCLass(QtWidgets.QWidget):
         plot_layout_rdg = QtWidgets.QVBoxLayout()
         plot_layout_imp = QtWidgets.QVBoxLayout()
         plot_layout_esc = QtWidgets.QVBoxLayout()
-        #toolbar es la barra sobre el canvas, un verdadero amigo
+        # toolbar es la barra sobre el canvas, un verdadero amigo
         plot_layout_mag.addWidget(NavigationToolbar(self.canvas_mag, self))
         plot_layout_mag.addWidget(self.canvas_mag)
         plot_layout_ate.addWidget(NavigationToolbar(self.canvas_ate, self))
@@ -131,7 +149,7 @@ class AppCLass(QtWidgets.QWidget):
         plot_layout_imp.addWidget(self.canvas_imp)
         plot_layout_esc.addWidget(NavigationToolbar(self.canvas_esc, self))
         plot_layout_esc.addWidget(self.canvas_esc)
-        #tengo todos unidos, ahora lo agrego a cada pesaña
+        # tengo todos unidos, ahora lo agrego a cada pesaña
         self.ui.MagTab.setLayout(plot_layout_mag)
         self.ui.PazTab.setLayout(plot_layout_paz)
         self.ui.AtenTab.setLayout(plot_layout_ate)
@@ -139,7 +157,7 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.RetGrupTab.setLayout(plot_layout_rdg)
         self.ui.RespImpTab.setLayout(plot_layout_imp)
         self.ui.RespEscTab.setLayout(plot_layout_esc)
-        #agregame el plot que sino nada tine sentido
+        # agregame el plot que sino nada tine sentido
         self.axes_mag = self.figure_mag.add_subplot()
         self.axes_paz = self.figure_paz.add_subplot()
         self.axes_ate = self.figure_ate.add_subplot()
