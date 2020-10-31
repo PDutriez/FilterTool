@@ -53,7 +53,7 @@ class AppCLass(QtWidgets.QWidget):
             print(bob.err_msg)
         else:
             self.filter_list.append(bob)  # Nace un plot nuevo
-            self.filter_list[-1].handlePlot(self)
+            self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag)
             # ni idea que va acá
 
     def parse_specs(self):
@@ -166,7 +166,6 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_esc = self.figure_esc.add_subplot()
         self.axes_rdg = self.figure_rdg.add_subplot()
         self.axes_fas = self.figure_fas.add_subplot()
-
 
 # ------------------------------------------------------------
 if __name__ == '__main__':

@@ -53,16 +53,25 @@ class FilterMaker(object):
 
         return success
 
-    def handlePlot(self,obj):
-        self.w, self.h = ss.freqs(self.Filtro.b, self.Filtro.a)
+    def handlePlot(self,axes,canvas): #Este seria el caso de LP
+        self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
+        bode = ss.bode(ss.TransferFunction(self.Filtro.b, self.Filtro.a), w=self.w)
+        axes.plot(bode[0] / (2 * np.pi), bode[1])
+        axes.set_xscale('log')
+        axes.set_xlabel('Frequency [Hz]');
+        axes.set_ylabel('Magnitude [dB]')
+        axes.minorticks_on()
+        axes.grid(which='both')
+        canvas.draw()
+        """self.w, self.h = ss.freqs(self.Filtro.b, self.Filtro.a)
         obj.axes_mag.semilogx(self.w, 20 * np.log10(abs(self.h)))
         obj.axes_mag.margins(0, 0.1)
         obj.axes_mag.set_xlabel('Frequency [radians / second]')
         obj.axes_mag.set_ylabel('Amplitude [dB]')
         obj.axes_mag.grid(which='both', axis='both')
         #obj.axes_mag.legend()
-        obj.canvas_mag.draw()
-# ------------------------------------------------------------
+        obj.canvas_mag.draw()"""
+#-----------------------------------------------------
 if __name__ == '__main__':
     pass
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1115</width>
-    <height>922</height>
+    <height>799</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -219,7 +219,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="SpinBoxQ"/>
+        <widget class="QLineEdit" name="lineEdit_8"/>
        </item>
        <item>
         <widget class="QLabel" name="label_11">
@@ -248,17 +248,43 @@
        <property name="verticalSpacing">
         <number>16</number>
        </property>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_2">
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>Amplitud en</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fa&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>Frecuencia en</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fp&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:sub;&quot;&gt;p&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -266,6 +292,21 @@
         <widget class="QLabel" name="label_9">
          <property name="text">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:sub;&quot;&gt;a&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fp&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;+&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -287,59 +328,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Gain&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:sub;&quot;&gt;p&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QDoubleSpinBox" name="SpinBoxAa"/>
-       </item>
-       <item row="2" column="3">
-        <widget class="QDoubleSpinBox" name="SpinBoxAp"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fp&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="SpinBoxFpplus"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="SpinBoxFpminus"/>
-       </item>
-       <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="SpinBoxFaminus"/>
-       </item>
-       <item row="1" column="3">
-        <widget class="QDoubleSpinBox" name="SpinBoxGain"/>
-       </item>
        <item row="0" column="3">
         <widget class="QComboBox" name="CBAmpUnit">
          <item>
@@ -352,6 +340,23 @@
            <string>unit</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Amplitud en</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Gain&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
@@ -373,38 +378,33 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fp&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;+&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <string>Frecuencia en</string>
          </property>
         </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineEdit_2"/>
        </item>
        <item row="3" column="1">
-        <widget class="QDoubleSpinBox" name="SpinBoxFaplus"/>
+        <widget class="QLineEdit" name="lineEdit_3"/>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;fa&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="lineEdit_4"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="lineEdit_5"/>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="lineEdit_6"/>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="lineEdit_7"/>
        </item>
       </layout>
      </item>
@@ -456,8 +456,14 @@
          <height>390</height>
         </size>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
+       </property>
+       <property name="tabBarAutoHide">
+        <bool>false</bool>
        </property>
        <widget class="QWidget" name="MagTab">
         <attribute name="title">
