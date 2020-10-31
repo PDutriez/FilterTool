@@ -21,20 +21,24 @@ class AppCLass(QtWidgets.QWidget):
         self.filter_list = []
 
         # EVENT HANDLER: acciones a partir de la UI
-        self.ui.CBAprox.currentIndexChanged.connect(self.change_ParamInputs)
+        self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
 
     def change_ParamInputs(self):
         #la idea es que no muestre todas las fpp... y App... dependiendo del filtro
-        filtro = self.ui.CBAprox.currentText()
+        filtro = self.ui.CBFilters.currentText()
         if filtro == 'LP':
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
+            self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'HP':
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/HP.png"))
+            self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BP':
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BP.png"))
+            self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BR':
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BR.png"))
+            self.ui.Filter_Image.setScaledContents(True)
         else:
             print('Filtro Incorrecto')
 
@@ -45,7 +49,7 @@ class AppCLass(QtWidgets.QWidget):
         if  not bob.make_filter(new_filter):
             print(bob.err_msg)
         else:
-            self.filter_list.append(filterFactory.newFilter(new_filter))  # Nace un plot nuevo
+            self.filter_list.append(bob)  # Nace un plot nuevo
             self.filter_list[-1].handlePlot(self)
             #ni idea que va acá
 
@@ -66,12 +70,12 @@ class AppCLass(QtWidgets.QWidget):
             filter['N'] = self.ui.NumOrden.value()
 
         if self.ui.CheckQmax.isChecked():
-            filter['Q'] = 'Auto'
+            filter['Q'] = 'auto'
         else:
             filter['Q'] = self.ui.SpinBoxQ.value()
 
         if self.ui.CheckDesnorm.isChecked():
-            filter['E'] = 'Auto'
+            filter['E'] = 'auto'
         else:
             filter['E'] = self.ui.SpinBoxDesnorm.value()
 

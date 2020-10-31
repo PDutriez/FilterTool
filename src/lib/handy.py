@@ -126,7 +126,33 @@ def gropu_delay(a=1,b=1,nfft=512,whole=False):
     w, gd = ss.group_delay((a, b), w=nfft, whole=whole)
     return w, gd
 #-----------------------------------------------------
+def chkLP(data):
+    success = False
+    if  data['fap'] > data['fpp']:
+        success = True
+    return success
+# -----------------------------------------------------
+def chkHP(data):
+    success = False
+    if  data['fap'] < data['fpp']:
+        success = True
 
+    return success
+# -----------------------------------------------------
+def chkBP(data):
+    success = False
+    if data['fam'] < data['fpm']:
+        if data['fpp'] < data['fap']:
+            success = True
+
+    return success
+# -----------------------------------------------------
+def chkBR(data):
+    success = False
+    if data['fam'] < data['fpm']:
+        if data['fpp'] < data['fap']:
+            success = True
+    return success
 #-----------------------------------------------------
 if __name__=='__main__':
     pass

@@ -104,7 +104,7 @@
      <item>
       <layout class="QHBoxLayout" name="FiltersOptions">
        <item>
-        <widget class="QComboBox" name="CBFilters">
+        <widget class="QComboBox" name="CBAprox">
          <item>
           <property name="text">
            <string>Aproximación</string>
@@ -148,7 +148,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="CBAprox">
+        <widget class="QComboBox" name="CBFilters">
          <item>
           <property name="text">
            <string>Tipo de Filtro</string>

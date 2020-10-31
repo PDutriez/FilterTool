@@ -8,12 +8,16 @@ Devuelve:
     -
 """
 #import scipy.signal as ss
-from scipy.signal import buttord, butter
-from src.lib.handy import save_filter, num2unit
+from scipy.signal import buttord, butter, sos2zpk
+#from src.lib.handy import save_filter, num2unit
 class Butter(object):
 
     def __init__(self):
         super(Butter,self).__init__()
+        self.b, self.a = None, None
+        self.sos = None
+        self.zpk = None
+        print("Butter Created")
     #-------------------------------------------------
     def get_params(self, data):
         self.N   = data['N']
@@ -24,17 +28,21 @@ class Butter(object):
         self.Ap  = data['Ap']
         self.Aa = data['Aa']
         self.fc = self.calc_crit(data)
-        self.format  = 'sos'
     # -------------------------------------------------
     def calc_crit(self,data):
-        if data['E'] != 'auto':
+        if data['E'] == 0:
+            data['E'] = 0.01 #Reemplazar por el val MIN
+        if data['E'] != 'auto': #buttord debe calcular fc
             return 1/(data['E']**(self.N))
+        elif data['N'] != 0: #setearon el orden con E auto
+            return (10**(self.Ap/10)-1)**0.5 #implementar desnorm
         else:
             return None
     #-------------------------------------------------
-    def save(self, data, new):
-        save_filter(data, new)
-
+    def save(self, new):
+        print(new)
+        self.sos = new
+        self.z, self.p, self.k = sos2zpk(new)
     # ------------------------------------------------
     def LP(self,data):
         self.get_params(data)
@@ -43,8 +51,9 @@ class Butter(object):
                                       self.Ap,self.Aa)
             if self.fc is None: self.fc = fc
 
-        self.save(data,butter(self.N,self.fc,btype='lowpass',
-                                 output=self.format))
+        self.b, self.a = butter(self.N, self.fc, btype='low', analog = True)
+        #self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     # ------------------------------------------------
     def HP(self,data):
         self.get_params(data)
@@ -52,8 +61,9 @@ class Butter(object):
             self.N, fc = buttord(self.fpp, self.fap,
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.save(data, butter(self.N, self.fc, btype='highpass',
-                                  output=self.format))
+        self.sos = butter(self.N, self.fc, btype='highpass',
+                          output='sos', analog = True)
+        self.z, self.p, self.k = sos2zpk(self.sos)
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
@@ -62,8 +72,8 @@ class Butter(object):
                                       [self.fap,self.fam],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.save(data, butter(self.N, self.fc, btype='bandpass',
-                                  output=self.format))
+        self.save(butter(self.N, self.fc, btype='bandpass',
+                         output='sos', analog = True))
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -72,9 +82,13 @@ class Butter(object):
                                       [self.fap,self.fam],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.save(data, butter(self.N, self.fc, btype='bandstop',
-                                  output=self.format))
+        self.save(butter(self.N, self.fc, btype='bandstop',
+                         output='sos', analog = True))
 # ----------------------------------------------------
 if __name__ == '__main__':
+    prueba = Butter()
+    data = {'N':2,'fpp':20,'fpm':0,'fam':0,'fap':50,'Ap':0.175,'Aa':60,'E':'auto'}
+    prueba.LP(data)
+    print(prueba.b,prueba.a)
     pass
     #Calculo que debería hacer algo...

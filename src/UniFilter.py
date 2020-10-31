@@ -8,9 +8,9 @@ from src.filters_aproxs.cheby1 import Cheby1
 from src.filters_aproxs.cheby2 import Cheby2
 from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
-from src.lib.handy import test_N
-#from src.filters_aproxs.gauss import Butter
-#from src.filters_aproxs.legendre import Butter
+from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR
+import numpy as np
+import scipy.signal as ss
 
 class FilterMaker(object):
 
@@ -21,34 +21,47 @@ class FilterMaker(object):
     def make_filter(self,data):
         success = False
         filtros = {
-            'Butterworth': Butter
-            , 'Chebyshev 1': Cheby1
-            , 'Chebyshev 2': Cheby2
-            , 'Bessel': Bessel
+            'Butterworth': Butter()
+            , 'Chebyshev 1': Cheby1()
+            , 'Chebyshev 2': Cheby2()
+            , 'Bessel': Bessel()
             # ,'Legendre': #Not yet implemented
             # ,'Gauss':    #Not yet implemented
-            , 'Cauer': Cauer
+            , 'Cauer': Cauer()
         }
         if data['aprox'] not in filtros.keys():
            self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
-        elif data['ft'] != "Tipo de Filtro":
-            self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro'
+        elif data['ft'] == "Tipo de Filtro":
+            self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
         elif not test_N(data):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
         else:
             success = True
             self.Filtro = filtros[data['aprox']]
             if data['ft'] == 'LP':
-                self.Filtro.LP(data)
+                if chkLP(data):
+                    self.Filtro.LP(data)
             elif data['ft'] == 'HP':
-                self.Filtro.HP(data)
+                if chkHP(data):
+                    self.Filtro.HP(data)
             elif data['ft'] == 'BP':
-                self.Filtro.BP(data)
+                if chkBP(data):
+                    self.Filtro.BP(data)
             elif data['ft'] == 'BR':
-                self.Filtro.BR(data)
+                if chkBR(data):
+                    self.Filtro.BR(data)
 
         return success
 
+    def handlePlot(self,obj):
+        self.w, self.h = ss.freqs(self.Filtro.b, self.Filtro.a)
+        obj.axes_mag.semilogx(self.w, 20 * np.log10(abs(self.h)))
+        obj.axes_mag.margins(0, 0.1)
+        obj.axes_mag.set_xlabel('Frequency [radians / second]')
+        obj.axes_mag.set_ylabel('Amplitude [dB]')
+        obj.axes_mag.grid(which='both', axis='both')
+        #obj.axes_mag.legend()
+        obj.canvas_mag.draw()
 # ------------------------------------------------------------
 if __name__ == '__main__':
     pass

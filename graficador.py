@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-from skimage import io
+#from skimage import io
 import numpy as np
-from src.filters_aproxs import butter_aprox as bt
+from src.filters_aproxs import butter as bt
 import scipy.signal as signal
 
 
