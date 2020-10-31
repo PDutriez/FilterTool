@@ -15,6 +15,7 @@ class AppCLass(QtWidgets.QWidget):
         super(AppCLass, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.GraphsWidget.setCurrentIndex(0)
         # MY STUFF: cosas que necesito instanciar externas a Qt
         self.createBodePlotsCanvas()
         self.plotDict = {}

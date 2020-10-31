@@ -88,7 +88,8 @@ class Butter(object):
 if __name__ == '__main__':
     prueba = Butter()
     data = {'N':2,'fpp':20,'fpm':0,'fam':0,'fap':50,'Ap':0.175,'Aa':60,'E':'auto'}
-    prueba.LP(data)
-    print(prueba.b,prueba.a)
+    prueba.HP(data)
+    print(prueba.sos)
+    print(prueba.z,prueba.p,prueba.k)
     pass
     #Calculo que debería hacer algo...

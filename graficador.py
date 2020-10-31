@@ -18,7 +18,7 @@ class newFilter:
     def handlePlot(self,obj):
         print(self.data)
 
-        self.w, self.h = signal.freqs(self.filter_object.b, self.filter_object.a, np.logspace(1, 8, 500))
+        self.w, self.h = signal.sosfreqz(self.filter_object.sos, np.logspace(1, 8, 500))
         obj.axes_mag.semilogx(self.w, 20 * np.log10(abs(self.h)))
         obj.axes_mag.margins(0, 0.1)
         obj.axes_mag.grid(which='both', axis='both')
