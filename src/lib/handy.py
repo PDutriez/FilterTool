@@ -147,14 +147,16 @@ def chkLP(data):
     success = False
     if  data['fap'] > data['fpp']:
         success = True
-    print("Error: fap must be greater than fpp")
+    else:
+        print("Error: fap must be greater than fpp")
     return success
 # -----------------------------------------------------
 def chkHP(data):
     success = False
     if  data['fap'] < data['fpp']:
         success = True
-    print("Error: fpp must be greater than fap")
+    else:
+        print("Error: fpp must be greater than fap")
     return success
 # -----------------------------------------------------
 def chkBP(data):
@@ -162,7 +164,10 @@ def chkBP(data):
     if data['fam'] < data['fpm']:
         if data['fpp'] < data['fap']:
             success = True
-    print("Error: fpm must be greater than fam & fap greater than fpp")
+        else:
+            print("Error: fap must be greater than fpp")
+    else:
+        print("Error: fpm must be greater than fam")
     return success
 # -----------------------------------------------------
 def chkBR(data):
@@ -170,7 +175,10 @@ def chkBR(data):
     if data['fam'] < data['fpm']:
         if data['fpp'] < data['fap']:
             success = True
-    print("Error: fpm must be greater than fam & fap greater than fpp")
+        else:
+            print("Error: fap must be greater than fpp")
+    else:
+        print("Error: fpm must be greater than fam")
     return success
 #-----------------------------------------------------
 if __name__=='__main__':
