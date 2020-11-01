@@ -26,6 +26,7 @@ class AppCLass(QtWidgets.QWidget):
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
+        self.ui.FilterList.itemClicked.connect(self.selected_filter)
 
     def change_ParamInputs(self):
         # la idea es que no muestre todas las fpp... y App... dependiendo del filtro
@@ -54,6 +55,15 @@ class AppCLass(QtWidgets.QWidget):
         else:
             self.filter_list.append(bob)
             self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag)
+
+            number = 0
+            for it in self.filter_list:
+                if it.ft == self.filter_list[-1].ft:
+                    number +=1
+            self.ui.FilterList.addItem(self.filter_list[-1].ft + ' ' + str(number))
+
+
+
             # ni idea que va acá
 
     def parse_specs(self):
@@ -166,6 +176,9 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_esc = self.figure_esc.add_subplot()
         self.axes_rdg = self.figure_rdg.add_subplot()
         self.axes_fas = self.figure_fas.add_subplot()
+
+    def selected_filter(self):
+        print("me clickearon!")
 
 # ------------------------------------------------------------
 if __name__ == '__main__':

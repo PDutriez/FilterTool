@@ -18,6 +18,7 @@ class FilterMaker(object):
         super(FilterMaker,self).__init__()
         self.Filtro = None
         self.err_msg = ""
+
     def make_filter(self,data):
         success = False
         filtros = {
@@ -37,6 +38,7 @@ class FilterMaker(object):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
         else:
             self.Filtro = filtros[data['aprox']]
+            self.ft = data['ft']
             if data['ft'] == 'LP':
                 if chkLP(data):
                     self.Filtro.LP(data)
@@ -57,7 +59,15 @@ class FilterMaker(object):
         return success
 
     def handlePlot(self,axes,canvas): #Este seria el caso de LP
-        self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
+        if self.ft == 'LP':
+            self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
+        elif self.ft == 'HP':
+            self.w = np.logspace(np.log10(self.Filtro.fap / 10), np.log10(self.Filtro.fpp * 10), num=10000) * 2 * np.pi
+        elif self.ft == 'BP':
+            self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
+        elif self.ft == 'BR':
+            self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
+        self.w = np.logspace(0,6,1000)
         bode = ss.bode(ss.TransferFunction(self.Filtro.b, self.Filtro.a), w=self.w)
         axes.plot(bode[0] / (2 * np.pi), bode[1])
         axes.set_xscale('log')
@@ -66,14 +76,7 @@ class FilterMaker(object):
         axes.minorticks_on()
         axes.grid(which='both')
         canvas.draw()
-        """self.w, self.h = ss.freqs(self.Filtro.b, self.Filtro.a)
-        obj.axes_mag.semilogx(self.w, 20 * np.log10(abs(self.h)))
-        obj.axes_mag.margins(0, 0.1)
-        obj.axes_mag.set_xlabel('Frequency [radians / second]')
-        obj.axes_mag.set_ylabel('Amplitude [dB]')
-        obj.axes_mag.grid(which='both', axis='both')
-        #obj.axes_mag.legend()
-        obj.canvas_mag.draw()"""
+
 #-----------------------------------------------------
 if __name__ == '__main__':
     pass

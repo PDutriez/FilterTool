@@ -61,9 +61,9 @@ class Butter(object):
             self.N, fc = buttord(self.fpp, self.fap,
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.sos = butter(self.N, self.fc, btype='highpass',
-                          output='sos', analog = True)
-        self.z, self.p, self.k = sos2zpk(self.sos)
+        self.b, self.a = butter(self.N, self.fc, btype='high', analog=True)
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
@@ -72,8 +72,9 @@ class Butter(object):
                                       [self.fap,self.fam],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.save(butter(self.N, self.fc, btype='bandpass',
-                         output='sos', analog = True))
+        self.b, self.a = butter(self.N, self.fc, btype='bandpass', analog=True)
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -82,8 +83,9 @@ class Butter(object):
                                       [self.fap,self.fam],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.save(butter(self.N, self.fc, btype='bandstop',
-                         output='sos', analog = True))
+        self.b, self.a = butter(self.N, self.fc, btype='bandstop', analog=True)
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
 # ----------------------------------------------------
 if __name__ == '__main__':
     prueba = Butter()
