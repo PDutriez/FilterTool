@@ -52,7 +52,7 @@ class AppCLass(QtWidgets.QWidget):
         if not bob.make_filter(new_filter):
             print(bob.err_msg)
         else:
-            self.filter_list.append(bob)  # Nace un plot nuevo
+            self.filter_list.append(bob)
             self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag)
             # ni idea que va acá
 

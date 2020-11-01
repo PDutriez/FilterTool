@@ -36,20 +36,23 @@ class FilterMaker(object):
         elif not test_N(data):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
         else:
-            success = True
             self.Filtro = filtros[data['aprox']]
             if data['ft'] == 'LP':
                 if chkLP(data):
                     self.Filtro.LP(data)
+                    success = True
             elif data['ft'] == 'HP':
                 if chkHP(data):
                     self.Filtro.HP(data)
+                    success = True
             elif data['ft'] == 'BP':
                 if chkBP(data):
                     self.Filtro.BP(data)
+                    success = True
             elif data['ft'] == 'BR':
                 if chkBR(data):
                     self.Filtro.BR(data)
+                    success = True
 
         return success
 
