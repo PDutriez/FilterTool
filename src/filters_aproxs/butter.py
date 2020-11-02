@@ -50,7 +50,7 @@ class Butter(object):
             self.N, fc = buttord(self.fpp,self.fap,
                                       self.Ap,self.Aa)
             if self.fc is None: self.fc = fc
-
+        print("fc:"+str(self.fc)+",N:"+str(self.N))
         self.b, self.a = butter(self.N, self.fc, btype='low', analog = True)
         #self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
@@ -61,7 +61,8 @@ class Butter(object):
             self.N, fc = buttord(self.fpp, self.fap,
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc
-        self.b, self.a = butter(self.N, self.fc, btype='high', analog=True)
+        print("fc:"+str(self.fc)+",N:"+str(self.N))
+        self.b, self.a = butter(self.N, self.fc, btype='highpass', analog=True)
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
     # ------------------------------------------------

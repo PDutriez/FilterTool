@@ -36,7 +36,7 @@ class FilterMaker(object):
             self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
         elif not test_N(data):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
-        else:
+        else:#Llegamos bien
             self.Filtro = filtros[data['aprox']]
             self.ft = data['ft']
             if data['ft'] == 'LP':
@@ -55,10 +55,11 @@ class FilterMaker(object):
                 if chkBR(data):
                     self.Filtro.BR(data)
                     success = True
-
+            self.name = data['aprox'] #Le pusimos un nombre
         return success
 
     def handlePlot(self,axes,canvas): #Este seria el caso de LP
+        #axes.clear()
         if self.ft == 'LP':
             self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
         elif self.ft == 'HP':
@@ -76,7 +77,6 @@ class FilterMaker(object):
         axes.minorticks_on()
         axes.grid(which='both')
         canvas.draw()
-
 #-----------------------------------------------------
 if __name__ == '__main__':
     pass

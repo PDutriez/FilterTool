@@ -6,6 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from src import UniFilter as UF
 from src.lib import handy as hand
+from src.lib.PlotControl import plotControl
 import graficador as filterFactory
 
 
@@ -50,21 +51,19 @@ class AppCLass(QtWidgets.QWidget):
         # botón de crear un filtro nuevo
         bob = UF.FilterMaker()
         new_filter = self.parse_specs()  # creamos un nuevo filtro
-        if not bob.make_filter(new_filter):
-            print(bob.err_msg)
-        else:
-            self.filter_list.append(bob)
-            self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag)
+        if not self.identicalTwins(new_filter):
+            if not bob.make_filter(new_filter):
+                print(bob.err_msg)
+            else:
+                self.filter_list.append(bob) #Lo sumamos a nuestra lista
+                self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
+                tempObject = plotControl(self, bob.name)
+                tempItem = QtWidgets.QListWidgetItem()
+                tempItem.setSizeHint(tempObject.sizeHint())
+                self.ui.FilterList.addItem(tempItem)
+                self.ui.FilterList.setItemWidget(tempItem, tempObject)
 
-            number = 0
-            for it in self.filter_list:
-                if it.ft == self.filter_list[-1].ft:
-                    number +=1
-            self.ui.FilterList.addItem(self.filter_list[-1].ft + ' ' + str(number))
 
-
-
-            # ni idea que va acá
 
     def parse_specs(self):
         """
@@ -104,11 +103,18 @@ class AppCLass(QtWidgets.QWidget):
 
         hand.save_data(filter)
         return filter
+    def identicalTwins(self,data):
+        for i in self.filter_list:
+            if i.name == str(data):
+                return True #Sin GEMELOS
+        return False #Felicidades es un BARON/VARON
 
     def recover(self,data):
         self.ui.NumOrden.setValue(int(data['N'][0]))
-        self.ui.SpinBoxQ.setValue(float(data['Q'][0]))
-        self.ui.SpinBoxDesnorm.setValue(int(data['E'][0]))
+        if data['Q'][0] != 'auto':
+            self.ui.SpinBoxQ.setValue(float(data['Q'][0]))
+        if data['E'][0] != 'auto':
+            self.ui.SpinBoxDesnorm.setValue(int(data['E'][0]))
         self.ui.CBAprox.setCurrentText((data['aprox'][0]))
         self.ui.CBFilters.setCurrentText(data['ft'][0])
         self.ui.SpinBoxGain.setValue(float(data['Go'][0]))
