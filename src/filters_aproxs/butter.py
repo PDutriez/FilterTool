@@ -9,6 +9,7 @@ Devuelve:
 """
 #import scipy.signal as ss
 from scipy.signal import buttord, butter, sos2zpk
+from numpy import pi
 #from src.lib.handy import save_filter, num2unit
 class Butter(object):
 
@@ -20,6 +21,7 @@ class Butter(object):
         print("Butter Created")
     #-------------------------------------------------
     def get_params(self, data):
+        print(data)
         self.N   = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -27,6 +29,7 @@ class Butter(object):
         self.fam = data['fam']
         self.Ap  = data['Ap']
         self.Aa = data['Aa']
+        self.Go = data['Go']
         self.fc = self.calc_crit(data)
     # -------------------------------------------------
     def calc_crit(self,data):
@@ -47,44 +50,48 @@ class Butter(object):
     def LP(self,data):
         self.get_params(data)
         if self.N == 0: #Nmin
-            self.N, fc = buttord(self.fpp,self.fap,
-                                      self.Ap,self.Aa)
-            if self.fc is None: self.fc = fc
+            self.N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
+                                 self.Ap,self.Aa, analog = True)
+            if self.fc is None: self.fc = fc/(2*pi)
         print("fc:"+str(self.fc)+",N:"+str(self.N))
-        self.b, self.a = butter(self.N, self.fc, btype='low', analog = True)
+        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
+        self.b = 10 ** (self.Go / 20) * self.b
         #self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
     # ------------------------------------------------
     def HP(self,data):
         self.get_params(data)
         if self.N == 0:
-            self.N, fc = buttord(self.fpp, self.fap,
-                                      self.Ap, self.Aa)
-            if self.fc is None: self.fc = fc
+            self.N, fc = buttord(self.fpp*(2*pi), self.fap*(2*pi),
+                                 self.Ap, self.Aa,analog = True)
+            if self.fc is None: self.fc = fc/(2*pi)
         print("fc:"+str(self.fc)+",N:"+str(self.N))
-        self.b, self.a = butter(self.N, self.fc, btype='highpass', analog=True)
+        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='highpass', analog=True, output='ba')
+        self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
         if self.N == 0:
-            self.N, fc = buttord([self.fpp,self.fpm],
-                                      [self.fap,self.fam],
+            self.N, fc = buttord([self.fpp*(2*pi),self.fpm*(2*pi)],
+                                      [self.fap*(2*pi),self.fam*(2*pi)],
                                       self.Ap, self.Aa)
-            if self.fc is None: self.fc = fc
-        self.b, self.a = butter(self.N, self.fc, btype='bandpass', analog=True)
+            if self.fc is None: self.fc = fc/(2*pi)
+        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandpass', analog=True)
+        self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
         if self.N == 0:
-            self.N, fc = buttord([self.fpp,self.fpm],
-                                      [self.fap,self.fam],
+            self.N, fc = buttord([self.fpp*(2*pi),self.fpm*(2*pi)],
+                                      [self.fap*(2*pi),self.fam*(2*pi)],
                                       self.Ap, self.Aa)
-            if self.fc is None: self.fc = fc
-        self.b, self.a = butter(self.N, self.fc, btype='bandstop', analog=True)
+            if self.fc is None: self.fc = fc/(2*pi)
+        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandstop', analog=True)
+        self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
 # ----------------------------------------------------

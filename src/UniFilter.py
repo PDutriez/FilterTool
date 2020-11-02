@@ -18,7 +18,8 @@ class FilterMaker(object):
         super(FilterMaker,self).__init__()
         self.Filtro = None
         self.err_msg = ""
-
+        self.chk = True
+        self.name = None
     def make_filter(self,data):
         success = False
         filtros = {
@@ -60,8 +61,35 @@ class FilterMaker(object):
             self.name = data['aprox'] #Le pusimos un nombre
         return success
 
-    def handlePlot(self,axes,canvas): #Este seria el caso de LP
-        #axes.clear()
+"""    def handlePlot(self,axes,canvas, plot):
+        if plot == 'mag':
+            self.magPlot(axes, canvas)
+        elif plot == 'ate':
+            self.atePlot(axes, canvas)
+        elif plot == 'paz':
+            self.pazPlot(axes,canvas)
+        elif plot == 'fas':
+            self.fasPlot(axes, canvas)
+        elif plot == 'rdg':
+            self.rdgPlot(axes, canvas)
+        elif plot == 'imp':
+            self.impPlot(axes, canvas)
+        elif plot == 'esc':
+            self.escPlot(axes, canvas)
+
+    def atePlot(self, axes, canvas):
+
+    def pazPlot(self, axes, canvas):
+
+    def fasPlot(self, axes, canvas):
+
+    def rdgPlot(self, axes, canvas):
+
+    def impPlot(self, axes, canvas):
+
+    def escPlot(self, axes, canvas):
+
+    def magPlot(self, axes, canvas):#Este seria el caso de LP
         if self.ft == 'LP':
             self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
         elif self.ft == 'HP':
@@ -79,7 +107,7 @@ class FilterMaker(object):
         axes.set_ylabel('Magnitude [dB]')
         axes.minorticks_on()
 
-        canvas.draw()
+        canvas.draw()"""
 #-----------------------------------------------------
 if __name__ == '__main__':
     pass

@@ -68,7 +68,7 @@ def num2unit(value, filt_type):
     if filt_type == "BP":
         unit_value = -20 * log10(1. - value)
     elif filt_type == "BR":
-        unit_value = -20 * log10(lin_value)
+        unit_value = -20 * log10(value)
     return unit_value
 #-----------------------------------------------------
 def unit2num(value,filt_type):
@@ -121,27 +121,6 @@ def test_N(data):
     else:
         print("N muy alto")
     return ok_N
-#-----------------------------------------------------
-def resp(a=1,b=1,N=0,step = False):
-    """
-    Calcula la respuesta impulsiva y al escalon
-    :param a: Numerador
-    :param b: Denominador
-    :param N: Numero de puntos a calcular    
-    :return: 
-    """
-    if N==0: N=100
-    H = ss.lti(a,b)
-    if step == True:
-        time, resp = H.step(N=N)
-    else:
-        time, resp = H.impulse(N=N)
-
-    return time, resp
-#-----------------------------------------------------
-def gropu_delay(a=1,b=1,nfft=512,whole=False):
-    w, gd = ss.group_delay((a, b), w=nfft, whole=whole)
-    return w, gd
 #-----------------------------------------------------
 def chkLP(data):
     success = False

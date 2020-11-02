@@ -7,6 +7,8 @@ from matplotlib.figure import Figure
 from src import UniFilter as UF
 from src.lib import handy as hand
 from src.lib.PlotControl import plotControl
+import numpy as np
+import scipy.signal as ss
 import graficador as filterFactory
 
 
@@ -28,6 +30,7 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
         self.ui.FilterList.itemClicked.connect(self.selected_filter)
+        self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
 
     def change_ParamInputs(self):
         # la idea es que no muestre todas las fpp... y App... dependiendo del filtro
@@ -55,16 +58,17 @@ class AppCLass(QtWidgets.QWidget):
             if not bob.make_filter(new_filter):
                 print(bob.err_msg)
             else:
-                self.filter_list.append(bob) #Lo sumamos a nuestra lista
+                self.filter_list.append(bob)  # Lo sumamos a nuestra lista
                 self.manage_plot()
-                #self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
+                # self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
                 tempObject = plotControl(self, bob.name)
                 tempItem = QtWidgets.QListWidgetItem()
                 tempItem.setSizeHint(tempObject.sizeHint())
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
-
-
+                self.manage_plot()
+        else:
+            print("No se admiten gemelos, aborten...")
 
     def parse_specs(self):
         """
@@ -104,13 +108,14 @@ class AppCLass(QtWidgets.QWidget):
 
         hand.save_data(filter)
         return filter
-    def identicalTwins(self,data):
+
+    def identicalTwins(self, data):
         for i in self.filter_list:
             if i.name == str(data):
-                return True #Sin GEMELOS
-        return False #Felicidades es un BARON/VARON
+                return True  # Sin GEMELOS
+        return False  # Felicidades es un BARON/VARON
 
-    def recover(self,data):
+    def recover(self, data):
         self.ui.NumOrden.setValue(int(data['N'][0]))
         if data['Q'][0] != 'auto':
             self.ui.SpinBoxQ.setValue(float(data['Q'][0]))
@@ -125,7 +130,6 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.SpinBoxFaminus.setValue(float(data['fam'][0]))
         self.ui.SpinBoxAp.setValue(float(data['Ap'][0]))
         self.ui.SpinBoxAa.setValue(float(data['Aa'][0]))
-
 
     def createBodePlotsCanvas(self):
         # creo una figura por pestaña
@@ -186,18 +190,132 @@ class AppCLass(QtWidgets.QWidget):
 
     def selected_filter(self):
         self.ui.textBrowser.append(("me clickearon"))
-        #print("me clickearon!")
+        # print("me clickearon!")
 
     #
     # def sheet(self):
     #     self.currentsheet=
 
     def manage_plot(self):
-        self.axes_mag.clear()
-        self.axes_mag.grid(which='both')
-        for it in self.filter_list:
-            it.handlePlot(self.axes_mag, self.canvas_mag)
+        w = self.ui.GraphsWidget.currentWidget()
+        tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
+                self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
+                self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
+                self.ui.FaseTab: (self.axes_fas, self.canvas_fas, self.fasPlot),
+                self.ui.RetGrupTab: (self.axes_rdg, self.canvas_rdg, self.rdgPlot),
+                self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
+                self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
+        if w in tabs.keys():
+            axes, canvas, plotter = tabs[w]
+            axes.clear()
+            axes.grid(which='both')
+            plotter(axes, canvas)
 
+    def magplot(self, axes, canvas):
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        for f in self.filter_list:
+            if f.chk:
+                bode = ss.bode(ss.TransferFunction(f.Filtro.b,f.Filtro.a),w=w)
+                axes.plot(bode[0] / (2 * np.pi), bode[1])
+        axes.set_xscale('log')
+        axes.set_xlabel('Frequency [Hz]');
+        axes.set_ylabel('Magnitude [dB]')
+        axes.minorticks_on()
+        canvas.draw()
+
+    def atePlot(self, axes, canvas):
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        for f in self.filter_list:
+            if f.chk:
+                bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
+                axes.plot(bode[0] / (2 * np.pi), 1/bode[1])
+        axes.set_xscale('log')
+        axes.set_xlabel('Frequency [Hz]');
+        axes.set_ylabel('Magnitude [dB]')
+        axes.minorticks_on()
+        canvas.draw()
+
+    def pazPlot(self, axes, canvas):
+        #theta = np.linspace(-np.pi, np.pi, 201)
+        #axes.plot(np.sin(theta), np.cos(theta), color='gray', linewidth=0.2)
+        #plt.annotate("ωo", pol2cart(1, np.pi / 4))
+        for f in self.filter_list:
+            if f.chk:
+                poles = np.roots(f.Filtro.a)
+                zeros = np.roots(f.Filtro.b)
+                axes.plot(np.real(poles), np.imag(poles), 'Xb', label='Poles' + f.name)
+                axes.plot(np.real(zeros), np.imag(zeros), 'or', label='Zeros' + f.name)
+        axes.axhline(y=0, color='gray', linewidth=1)
+        axes.axvline(x=0, color='gray', linewidth=1)
+        axes.set_xlabel("Real")
+        axes.set_ylabel("Imaginary")
+        axes.legend(loc='best')
+        canvas.draw()
+
+    def fasPlot(self, axes, canvas):
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        for f in self.filter_list:
+            if f.chk:
+                bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
+                axes.plot(bode[0] / (2 * np.pi), bode[2])
+        axes.set_xscale('log')
+        axes.set_xlabel('Frequency [Hz]');
+        axes.set_ylabel('Phase [º]')
+        axes.minorticks_on()
+        canvas.draw()
+
+    def rdgPlot(self, axes, canvas):
+        for f in self.filter_list:
+            if f.chk:
+                w, gd = ss.group_delay((f.Filtro.a, f.Filtro.b))
+                axes.plot(w/(2 * np.pi), gd)
+        axes.set_xscale('log')
+        axes.set_ylabel('Group delay [samples]')
+        axes.set_xlabel('Frequency [Hz]')
+        axes.minorticks_on()
+        canvas.draw()
+
+    def impPlot(self, axes, canvas):
+        for f in self.filter_list:
+            if f.chk:
+                H = ss.lti(f.Filtro.b,f.Filtro.a)
+                time, resp = H.impulse()
+                axes.plot(time, resp)
+        axes.set_xlabel('time')
+        axes.set_ylabel('Amplitude')
+        canvas.draw()
+    def escPlot(self, axes, canvas):
+        for f in self.filter_list:
+            if f.chk:
+                H = ss.lti(f.Filtro.b,f.Filtro.a)
+                time, resp = H.step()
+                axes.plot(time, resp)
+        axes.set_xlabel('time')
+        axes.set_ylabel('Amplitude')
+        canvas.draw()
+
+    def lowestFreq(self):
+        lf = []
+        filtro = self.ui.CBFilters.currentText()
+        for f in self.filter_list:
+            if filtro == 'LP' or filtro == 'HP':
+                lf.append(f.Filtro.fap)
+            elif filtro == 'BP' or filtro == 'BP':
+                lf.append(f.Filtro.fam)
+            else:
+                print('Filtro Incorrecto')
+        return min(lf)
+    def highestFreq(self):
+        hf = []
+        filtro = self.ui.CBFilters.currentText()
+        for f in self.filter_list:
+            if filtro == 'LP' or filtro == 'HP':
+                hf.append(f.Filtro.fpp)
+            elif filtro == 'BP' or filtro == 'BP':
+                hf.append(f.Filtro.fap)
+            else:
+                print('Filtro Incorrecto')
+        return max(hf)
 # ------------------------------------------------------------
 if __name__ == '__main__':
     MyFilterToolApp = QtWidgets.QApplication(sys.argv)
