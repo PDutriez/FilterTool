@@ -36,6 +36,8 @@ class FilterMaker(object):
             self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
         elif not test_N(data):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
+        elif data['Aa']<data['Ap']:
+            self.err_msg = 'ERROR: Aa must be greater than Ap'
         else:#Llegamos bien
             self.Filtro = filtros[data['aprox']]
             self.ft = data['ft']
@@ -68,14 +70,15 @@ class FilterMaker(object):
             self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
         elif self.ft == 'BR':
             self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
-        self.w = np.logspace(0,6,1000)
+
+        #self.w = np.logspace(0,6,1000)
         bode = ss.bode(ss.TransferFunction(self.Filtro.b, self.Filtro.a), w=self.w)
         axes.plot(bode[0] / (2 * np.pi), bode[1])
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
         axes.minorticks_on()
-        axes.grid(which='both')
+
         canvas.draw()
 #-----------------------------------------------------
 if __name__ == '__main__':

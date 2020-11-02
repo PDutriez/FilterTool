@@ -56,7 +56,8 @@ class AppCLass(QtWidgets.QWidget):
                 print(bob.err_msg)
             else:
                 self.filter_list.append(bob) #Lo sumamos a nuestra lista
-                self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
+                self.manage_plot()
+                #self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
                 tempObject = plotControl(self, bob.name)
                 tempItem = QtWidgets.QListWidgetItem()
                 tempItem.setSizeHint(tempObject.sizeHint())
@@ -184,7 +185,18 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_fas = self.figure_fas.add_subplot()
 
     def selected_filter(self):
-        print("me clickearon!")
+        self.ui.textBrowser.append(("me clickearon"))
+        #print("me clickearon!")
+
+    #
+    # def sheet(self):
+    #     self.currentsheet=
+
+    def manage_plot(self):
+        self.axes_mag.clear()
+        self.axes_mag.grid(which='both')
+        for it in self.filter_list:
+            it.handlePlot(self.axes_mag, self.canvas_mag)
 
 # ------------------------------------------------------------
 if __name__ == '__main__':
