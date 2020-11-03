@@ -71,7 +71,7 @@ class AppCLass(QtWidgets.QWidget):
                 tempItem.setSizeHint(tempObject.sizeHint())
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
-                self.manage_plot()
+                #self.manage_plot()
 
 
     def inputConditions(self):
@@ -224,6 +224,11 @@ class AppCLass(QtWidgets.QWidget):
         if w in tabs.keys():
             axes, canvas, plotter = tabs[w]
             axes.clear()
+            if self.filter_list[-1].ft != self.filter_list[0].ft:
+                temp = self.filter_list[-1]
+                self.filter_list.clear()
+                self.filter_list.append(temp)
+                self.ui.FilterList.clear()
             axes.grid(which='both')
             plotter(axes, canvas)
 
