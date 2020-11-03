@@ -56,8 +56,9 @@ class AppCLass(QtWidgets.QWidget):
         new_filter = self.parse_specs()  # creamos un nuevo filtro
         if not self.identicalTwins(new_filter):
             if not bob.make_filter(new_filter):
-                print(bob.err_msg)
+                self.printMsg(bob.err_msg)
             else:
+                self.printMsg(bob.msg)
                 self.filter_list.append(bob)  # Lo sumamos a nuestra lista
                 self.manage_plot()
                 # self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
@@ -68,7 +69,8 @@ class AppCLass(QtWidgets.QWidget):
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
                 self.manage_plot()
         else:
-            print("No se admiten gemelos, aborten...")
+            msg ="No se admiten gemelos, aborten..."
+            self.printMsg(msg)
 
     def parse_specs(self):
         """
@@ -119,8 +121,12 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.NumOrden.setValue(int(data['N'][0]))
         if data['Q'][0] != 'auto':
             self.ui.SpinBoxQ.setValue(float(data['Q'][0]))
+        else:
+            self.ui.CheckQmax.setChecked(True)
         if data['E'][0] != 'auto':
             self.ui.SpinBoxDesnorm.setValue(int(data['E'][0]))
+        else:
+            self.ui.CheckDesnorm.setChecked(True)
         self.ui.CBAprox.setCurrentText((data['aprox'][0]))
         self.ui.CBFilters.setCurrentText(data['ft'][0])
         self.ui.SpinBoxGain.setValue(float(data['Go'][0]))
@@ -191,6 +197,10 @@ class AppCLass(QtWidgets.QWidget):
     def selected_filter(self):
         self.ui.textBrowser.append(("me clickearon"))
         # print("me clickearon!")
+
+
+    def printMsg(self,msg):
+        self.ui.textBrowser.append(msg)
 
     #
     # def sheet(self):
@@ -300,7 +310,7 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             if filtro == 'LP' or filtro == 'HP':
                 lf.append(f.Filtro.fap)
-            elif filtro == 'BP' or filtro == 'BP':
+            elif filtro == 'BP' or filtro == 'BR':
                 lf.append(f.Filtro.fam)
             else:
                 print('Filtro Incorrecto')

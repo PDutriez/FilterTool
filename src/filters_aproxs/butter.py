@@ -74,11 +74,13 @@ class Butter(object):
     def BP(self,data):
         self.get_params(data)
         if self.N == 0:
-            self.N, fc = buttord([self.fpp*(2*pi),self.fpm*(2*pi)],
-                                      [self.fap*(2*pi),self.fam*(2*pi)],
+            self.N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
+                                      [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc/(2*pi)
-        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandpass', analog=True)
+
+        #self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandpass', analog=True)
+        self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
@@ -86,11 +88,11 @@ class Butter(object):
     def BR(self,data):
         self.get_params(data)
         if self.N == 0:
-            self.N, fc = buttord([self.fpp*(2*pi),self.fpm*(2*pi)],
-                                      [self.fap*(2*pi),self.fam*(2*pi)],
+            self.N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
+                                      [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa)
             if self.fc is None: self.fc = fc/(2*pi)
-        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandstop', analog=True)
+        self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)

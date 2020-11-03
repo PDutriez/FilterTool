@@ -18,6 +18,7 @@ class FilterMaker(object):
         super(FilterMaker,self).__init__()
         self.Filtro = None
         self.err_msg = ""
+        self.msg = ""
         self.chk = True
         self.name = None
     def make_filter(self,data):
@@ -41,23 +42,36 @@ class FilterMaker(object):
             self.err_msg = 'ERROR: Aa must be greater than Ap'
         else:#Llegamos bien
             self.Filtro = filtros[data['aprox']]
+            self.msg = data['aprox'] + ' ' + 'created' + ',' + ' ' + data['ft']
             self.ft = data['ft']
             if data['ft'] == 'LP':
-                if chkLP(data):
+                if chkLP(data)[0]:
                     self.Filtro.LP(data)
                     success = True
+                else:
+                    self.err_msg = chkLP(data)[1]
+                    return success
             elif data['ft'] == 'HP':
-                if chkHP(data):
+                if chkHP(data)[0]:
                     self.Filtro.HP(data)
                     success = True
+                else:
+                    self.err_msg = chkHP(data)[1]
+                    return success
             elif data['ft'] == 'BP':
-                if chkBP(data):
+                if chkBP(data)[0]:
                     self.Filtro.BP(data)
                     success = True
+                else:
+                    self.err_msg = chkBP(data)[1]
+                    return success
             elif data['ft'] == 'BR':
-                if chkBR(data):
+                if chkBR(data)[0]:
                     self.Filtro.BR(data)
                     success = True
+                else:
+                    self.err_msg = chkBR(data)[1]
+                    return success
             self.name = data['aprox'] #Le pusimos un nombre
         return success
 
