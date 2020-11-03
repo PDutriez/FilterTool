@@ -10,9 +10,9 @@ class plotControl(QWidget, Ui_plotControlWrapper):
 
         self.mainWindow = mainWindow
         self.model = plotModelInfo
-        self.label_plot.setText(self.model)
+        self.label_plot.setText(self.model.name)
         self.checkBox_plot.stateChanged.connect(self.toggleVisible)
-        self.toolButton_plotCol.pressed.connect(self.selectColor)
+        #self.toolButton_plotCol.pressed.connect(self.selectColor)
         self.toolButton_plotDel.pressed.connect(self.destroyPlot)
 
         # self.checkBox_plot.setChecked(True)
@@ -24,15 +24,14 @@ class plotControl(QWidget, Ui_plotControlWrapper):
         else:
             self.model.setVisible(False)
 
-    def selectColor(self):
+#    def selectColor(self):
 
-        colorDialog = QColorDialog()
-        color = colorDialog.getColor()
-        if color.isValid():
-            self.model.setPlotColor(color)
+#        colorDialog = QColorDialog()
+#        color = colorDialog.getColor()
+#        if color.isValid():
+#            self.model.setPlotColor(color)
 
     def destroyPlot(self):
-        doomedName = self.model.getName()
-        doomedType = self.model.getType()
-
-        self.mainWindow.deletePlotControlItem(name=doomedName, inType=doomedType)
+        doomedName = self.model.name
+        return doomedName
+        #self.mainWindow.deletePlotControlItem(name=doomedName)

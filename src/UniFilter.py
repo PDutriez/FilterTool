@@ -12,16 +12,19 @@ from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR
 import numpy as np
 import scipy.signal as ss
 
+
 class FilterMaker(object):
 
     def __init__(self):
-        super(FilterMaker,self).__init__()
+        super(FilterMaker, self).__init__()
         self.Filtro = None
         self.err_msg = ""
         self.msg = ""
-        self.chk = True
+        self.chk = False
         self.name = None
-    def make_filter(self,data):
+        # self.color = None
+
+    def make_filter(self, data, index):
         success = False
         filtros = {
             'Butterworth': Butter()
@@ -33,14 +36,14 @@ class FilterMaker(object):
             , 'Cauer': Cauer()
         }
         if data['aprox'] not in filtros.keys():
-           self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
+            self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
         elif data['ft'] == "Tipo de Filtro":
             self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
         elif not test_N(data):
             self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
-        elif data['Aa']<data['Ap']:
+        elif data['Aa'] < data['Ap']:
             self.err_msg = 'ERROR: Aa must be greater than Ap'
-        else:#Llegamos bien
+        else:  # Llegamos bien
             self.Filtro = filtros[data['aprox']]
             self.msg = data['aprox'] + ' ' + 'created' + ',' + ' ' + data['ft']
             self.ft = data['ft']
@@ -72,8 +75,23 @@ class FilterMaker(object):
                 else:
                     self.err_msg = chkBR(data)[1]
                     return success
-            self.name = data['aprox'] #Le pusimos un nombre
+            self.name = data['aprox'] + str(index) + '(N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
         return success
+
+    def setVisible(self, bool):
+        self.chk = bool
+
+    def __eq__(self, doppelganger):
+        my = self.Filtro
+        other = doppelganger.Filtro
+        if my.N == other.N and my.fpp == other.fpp and my.fpm == other.fpm:
+            if my.fap == other.fap and my.fam == other.fam and my.Ap == other.Ap:
+                if my.Aa == other.Aa and my.Go == other.Go and my.fc == other.fc:
+                    return True
+        return False
+
+    def __str__(self):
+        return f'name:{self.Filtro.name}'
 
 """    def handlePlot(self,axes,canvas, plot):
         if plot == 'mag':
@@ -122,7 +140,6 @@ class FilterMaker(object):
         axes.minorticks_on()
 
         canvas.draw()"""
-#-----------------------------------------------------
+# -----------------------------------------------------
 if __name__ == '__main__':
     pass
-

@@ -53,24 +53,36 @@ class AppCLass(QtWidgets.QWidget):
     def CreateNew(self):
         # botón de crear un filtro nuevo
         bob = UF.FilterMaker()
-        new_filter = self.parse_specs()  # creamos un nuevo filtro
-        if not self.identicalTwins(new_filter):
-            if not bob.make_filter(new_filter):
-                self.printMsg(bob.err_msg)
+        msg = self.inputConditions()
+        if msg != 'ok': self.showmsg(msg)
+        else:
+            new_filter = self.parse_specs()  # creamos un nuevo filtro
+            if not bob.make_filter(new_filter, len(self.filter_list)):
+                print(bob.err_msg)
+            elif self.identicalTwins(bob):
+                self.showmsg("No se admiten gemelos, aborten...")
             else:
-                self.printMsg(bob.msg)
+                self.showmsg(bob.msg)
                 self.filter_list.append(bob)  # Lo sumamos a nuestra lista
                 self.manage_plot()
                 # self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
-                tempObject = plotControl(self, bob.name)
+                tempObject = plotControl(self, bob)
                 tempItem = QtWidgets.QListWidgetItem()
                 tempItem.setSizeHint(tempObject.sizeHint())
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
                 self.manage_plot()
-        else:
-            msg ="No se admiten gemelos, aborten..."
-            self.printMsg(msg)
+
+
+    def inputConditions(self):
+        if not self.ui.CheckMinOrden.isChecked() and self.ui.NumOrden.value() == 0:
+            msg = 'Valor de N no seleccionado'
+        elif not self.ui.CheckDesnorm.isChecked() and self.ui.SpinBoxDesnorm.value() == 0:
+            msg = 'Valor de E no seleccionado'
+        elif not self.ui.CheckQmax.isChecked() and self.ui.SpinBoxQ.value() == 0:
+            msg = 'Valor de Qmax no seleccionado'
+        else: msg = 'ok'
+        return msg
 
     def parse_specs(self):
         """
@@ -113,7 +125,7 @@ class AppCLass(QtWidgets.QWidget):
 
     def identicalTwins(self, data):
         for i in self.filter_list:
-            if i.name == str(data):
+            if i == data:
                 return True  # Sin GEMELOS
         return False  # Felicidades es un BARON/VARON
 
@@ -197,14 +209,8 @@ class AppCLass(QtWidgets.QWidget):
     def selected_filter(self):
         self.ui.textBrowser.append(("me clickearon"))
         # print("me clickearon!")
-
-
-    def printMsg(self,msg):
+    def showmsg(self,msg):
         self.ui.textBrowser.append(msg)
-
-    #
-    # def sheet(self):
-    #     self.currentsheet=
 
     def manage_plot(self):
         w = self.ui.GraphsWidget.currentWidget()
@@ -222,11 +228,11 @@ class AppCLass(QtWidgets.QWidget):
             plotter(axes, canvas)
 
     def magplot(self, axes, canvas):
-        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 10), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b,f.Filtro.a),w=w)
-                axes.plot(bode[0] / (2 * np.pi), bode[1])
+                axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
@@ -234,11 +240,11 @@ class AppCLass(QtWidgets.QWidget):
         canvas.draw()
 
     def atePlot(self, axes, canvas):
-        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(self.highestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
-                bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
-                axes.plot(bode[0] / (2 * np.pi), 1/bode[1])
+                bode = ss.bode(ss.TransferFunction(f.Filtro.a, f.Filtro.b), w=w)
+                axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
@@ -257,17 +263,20 @@ class AppCLass(QtWidgets.QWidget):
                 axes.plot(np.real(zeros), np.imag(zeros), 'or', label='Zeros' + f.name)
         axes.axhline(y=0, color='gray', linewidth=1)
         axes.axvline(x=0, color='gray', linewidth=1)
+        d = self.furthestPZ()
+        axes.set_xlim(-d,d)
+        axes.set_ylim(-d,d)
         axes.set_xlabel("Real")
         axes.set_ylabel("Imaginary")
         axes.legend(loc='best')
         canvas.draw()
 
     def fasPlot(self, axes, canvas):
-        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 10), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
-                axes.plot(bode[0] / (2 * np.pi), bode[2])
+                axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Phase [º]')
@@ -278,7 +287,7 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             if f.chk:
                 w, gd = ss.group_delay((f.Filtro.a, f.Filtro.b))
-                axes.plot(w/(2 * np.pi), gd)
+                axes.plot(w/(2 * np.pi), gd, label=f.name)
         axes.set_xscale('log')
         axes.set_ylabel('Group delay [samples]')
         axes.set_xlabel('Frequency [Hz]')
@@ -290,7 +299,7 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 H = ss.lti(f.Filtro.b,f.Filtro.a)
                 time, resp = H.impulse()
-                axes.plot(time, resp)
+                axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         canvas.draw()
@@ -299,16 +308,31 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 H = ss.lti(f.Filtro.b,f.Filtro.a)
                 time, resp = H.step()
-                axes.plot(time, resp)
+                axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         canvas.draw()
-
+    def furthestPZ(self):
+        dist = []
+        for f in self.filter_list:
+            poles = np.roots(f.Filtro.a)
+            zeros = np.roots(f.Filtro.b)
+            print(poles,zeros)
+            if len(poles):
+                if len(zeros):
+                    dist.append(max(max(poles), max(zeros)))
+                else:
+                    dist.append(max(poles))
+            elif len(zeros):
+                dist.append(max(zeros))
+        return max(dist)
     def lowestFreq(self):
         lf = []
         filtro = self.ui.CBFilters.currentText()
         for f in self.filter_list:
-            if filtro == 'LP' or filtro == 'HP':
+            if filtro == 'LP':
+                lf.append(f.Filtro.fpp)
+            elif filtro == 'HP':
                 lf.append(f.Filtro.fap)
             elif filtro == 'BP' or filtro == 'BR':
                 lf.append(f.Filtro.fam)
@@ -319,12 +343,14 @@ class AppCLass(QtWidgets.QWidget):
         hf = []
         filtro = self.ui.CBFilters.currentText()
         for f in self.filter_list:
-            if filtro == 'LP' or filtro == 'HP':
+            if filtro == 'LP':
+                hf.append(f.Filtro.fap)
+            elif filtro == 'HP':
                 hf.append(f.Filtro.fpp)
-            elif filtro == 'BP' or filtro == 'BP':
+            elif filtro == 'BP' or filtro == 'BR':
                 hf.append(f.Filtro.fap)
             else:
-                print('Filtro Incorrecto')
+                print('Filtro Incorrecto: '+filtro)
         return max(hf)
 # ------------------------------------------------------------
 if __name__ == '__main__':
