@@ -58,7 +58,7 @@ class AppCLass(QtWidgets.QWidget):
         else:
             new_filter = self.parse_specs()  # creamos un nuevo filtro
             if not bob.make_filter(new_filter, len(self.filter_list)):
-                print(bob.err_msg)
+                self.showmsg(bob.err_msg)
             elif self.identicalTwins(bob):
                 self.showmsg("No se admiten gemelos, aborten...")
             else:

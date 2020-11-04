@@ -86,8 +86,11 @@ class FilterMaker(object):
         other = doppelganger.Filtro
         if my.N == other.N and my.fpp == other.fpp and my.fpm == other.fpm:
             if my.fap == other.fap and my.fam == other.fam and my.Ap == other.Ap:
-                if my.Aa == other.Aa and my.Go == other.Go and my.fc == other.fc:
-                    return True
+                if my.Aa == other.Aa:
+                    if my.Go == other.Go:
+                        if my.fc.all() == other.fc.all():
+                            if self.ft == doppelganger.ft:
+                                return True
         return False
 
     def __str__(self):

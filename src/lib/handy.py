@@ -144,8 +144,11 @@ def chkBP(data):
     success = False
     if data['fam'] < data['fpm']:
         if data['fpp'] < data['fap']:
-            success = True
-            msg = "Ok"
+            if data['fpp'] > data['fpm']:
+                success = True
+                msg = "Ok"
+            else:
+                msg = "Error: fpp must be grater than fpm"
         else:
             msg = "Error: fap must be greater than fpp"
     else:
@@ -157,7 +160,11 @@ def chkBR(data):
     msg = "Ok"
     if data['fam'] < data['fpm']:
         if data['fpp'] < data['fap']:
-            success = True
+            if data['fpp'] > data['fpm']:
+                success = True
+                msg = "Ok"
+            else:
+                msg = "Error: fpp must be grater than fpm"
         else:
             msg = "Error: fap must be greater than fpp"
     else:
