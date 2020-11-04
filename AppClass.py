@@ -29,7 +29,7 @@ class AppCLass(QtWidgets.QWidget):
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
-        self.ui.FilterList.itemClicked.connect(self.selected_filter)
+        self.ui.FilterList.itemChanged.connect(self.selected_filter)
         self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
 
     def change_ParamInputs(self):
@@ -72,7 +72,6 @@ class AppCLass(QtWidgets.QWidget):
                 tempItem.setSizeHint(tempObject.sizeHint())
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
-                self.manage_plot()
 
 
     def inputConditions(self):
@@ -215,29 +214,33 @@ class AppCLass(QtWidgets.QWidget):
 
     def delete_PlotControlItem(self,MrMeeseeks):
         self.filter_list.remove(MrMeeseeks.model)
-        self.ui.FilterList.takeItem(self.ui.FilterList.row(self.ui.FilterList.findItems(MrMeeseeks.model.name, QtCore.Qt.MatchExactly)))
+        for i in range(0,self.ui.FilterList.count()):
+            if MrMeeseeks == self.ui.FilterList.itemWidget(self.ui.FilterList.item(i)):
+                self.ui.FilterList.takeItem(i)
+        self.manage_plot()
 
     def manage_plot(self):
+        w = self.ui.GraphsWidget.currentWidget() #Wipe it
+        tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
+                self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
+                self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
+                self.ui.FaseTab: (self.axes_fas, self.canvas_fas, self.fasPlot),
+                self.ui.RetGrupTab: (self.axes_rdg, self.canvas_rdg, self.rdgPlot),
+                self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
+                self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
+        if w in tabs.keys():
+            print("VAMO BOCA")
+            axes, canvas, plotter = tabs[w]
+            axes.clear()
         if len(self.filter_list):
-            w = self.ui.GraphsWidget.currentWidget()
-            tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
-                    self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
-                    self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
-                    self.ui.FaseTab: (self.axes_fas, self.canvas_fas, self.fasPlot),
-                    self.ui.RetGrupTab: (self.axes_rdg, self.canvas_rdg, self.rdgPlot),
-                    self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
-                    self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
-            if w in tabs.keys():
-                axes, canvas, plotter = tabs[w]
-                axes.clear()
-                if self.filter_list[-1].ft != self.filter_list[0].ft:
-                    temp = self.filter_list[-1]
-                    self.filter_list.clear()
-                    self.filter_list.append(temp)
-                    self.ui.FilterList.clear()
-                axes.grid(which='both')
-                plotter(axes, canvas)
-
+            if self.filter_list[-1].ft != self.filter_list[0].ft:
+                temp = self.filter_list[-1]
+                self.filter_list.clear()
+                self.filter_list.append(temp)
+                self.ui.FilterList.clear()
+            axes.grid(which='both')
+            plotter(axes, canvas)
+        else:            canvas.draw()
     def magplot(self, axes, canvas):
         w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 10), num=10000) * 2 * np.pi
         for f in self.filter_list:

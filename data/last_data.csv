@@ -1,11 +1,11 @@
 ,0
-N,6
+N,5
 Q,auto
 E,auto
 aprox,Butterworth
 ft,LP
 Go,82.99
-fpp,1000.0
+fpp,1500.0
 fpm,2500.0
 fap,2000.0
 fam,995.0

@@ -11,6 +11,7 @@ class plotControl(QWidget, Ui_plotControlWrapper):
         self.mainWindow = mainWindow
         self.model = plotModelInfo
         self.label_plot.setText(self.model.name)
+        self.checkBox_plot.setChecked(True)
         self.checkBox_plot.stateChanged.connect(self.toggleVisible)
         #self.toolButton_plotCol.pressed.connect(self.selectColor)
         self.toolButton_plotDel.pressed.connect(self.destroyPlot)
@@ -23,6 +24,7 @@ class plotControl(QWidget, Ui_plotControlWrapper):
             self.model.setVisible(True)
         else:
             self.model.setVisible(False)
+        self.mainWindow.manage_plot()
 
 #    def selectColor(self):
 

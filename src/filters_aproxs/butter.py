@@ -29,9 +29,19 @@ class Butter(object):
         self.Ap  = data['Ap']
         self.Aa = data['Aa']
         self.Go = data['Go']
-        self.fc = self.calc_crit(data)
+        self.E = data['E']
+        self.Q = data['Q']
     # -------------------------------------------------
-    def calc_crit(self,data):
+    def calc_NQE(self, N, fc):
+        if self.N == 0:
+            self.N = N
+        if self.E == 'auto' and self.Q == 'auto':
+            self.fc = fc
+        elif self.E != 'auto':
+            if self.Q == 'auto':
+
+
+
         if data['E'] == 0:
             data['E'] = 0.01 #Reemplazar por el val MIN
         if data['E'] != 'auto': #buttord debe calcular fc
@@ -40,6 +50,18 @@ class Butter(object):
             return (10**(self.Ap/10)-1)**0.5 #implementar desnorm
         else:
             return None
+
+            if self.N == 0: #Nmin
+        self.N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
+                             self.Ap,self.Aa, analog = True)
+        if self.Q == 'auto' and self.E == 'auto': self.fc = fc/(2*pi)
+        else:  self.fc = self.calc_crit()
+    else:
+        N, fc = buttord(self.fpp * (2 * pi), self.fap * (2 * pi),
+                             self.Ap, self.Aa, analog=True)
+        if self.Q == 'auto' and self.E == 'auto': self.fc = fc/(2*pi)
+        else:  self.fc = self.calc_crit()
+
     #-------------------------------------------------
     def save(self, new):
         print(new)
@@ -48,10 +70,10 @@ class Butter(object):
     # ------------------------------------------------
     def LP(self,data):
         self.get_params(data)
-        if self.N == 0: #Nmin
-            self.N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
+        N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
                                  self.Ap,self.Aa, analog = True)
-            if self.fc is None: self.fc = fc/(2*pi)
+        self.calc_NQE(N, fc)
+
         print("fc:"+str(self.fc)+",N:"+str(self.N))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
@@ -60,10 +82,10 @@ class Butter(object):
     # ------------------------------------------------
     def HP(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, fc = buttord(self.fpp*(2*pi), self.fap*(2*pi),
+        N, fc = buttord(self.fpp*(2*pi), self.fap*(2*pi),
                                  self.Ap, self.Aa,analog = True)
-            if self.fc is None: self.fc = fc/(2*pi)
+        self.calc_NQE(N, fc)
+
         print("fc:"+str(self.fc)+",N:"+str(self.N))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='highpass', analog=True, output='ba')
         self.b = 10**(self.Go/20)*self.b
@@ -72,13 +94,11 @@ class Butter(object):
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
+        N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
                                       [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa)
-            if self.fc is None: self.fc = fc/(2*pi)
+        self.calc_NQE(N, fc)
 
-        #self.b, self.a = butter(self.N, self.fc*(2*pi), btype='bandpass', analog=True)
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
@@ -86,11 +106,11 @@ class Butter(object):
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
-                                      [self.fam*(2*pi),self.fap*(2*pi)],
-                                      self.Ap, self.Aa)
-            if self.fc is None: self.fc = fc/(2*pi)
+        N, fc = buttord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+                        [self.fam * (2 * pi), self.fap * (2 * pi)],
+                        self.Ap, self.Aa)
+        self.calc_NQE(N, fc)
+
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
