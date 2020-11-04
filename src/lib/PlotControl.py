@@ -32,6 +32,4 @@ class plotControl(QWidget, Ui_plotControlWrapper):
 #            self.model.setPlotColor(color)
 
     def destroyPlot(self):
-        doomedName = self.model.name
-        return doomedName
-        #self.mainWindow.deletePlotControlItem(name=doomedName)
+        self.mainWindow.delete_PlotControlItem(self)

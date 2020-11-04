@@ -18,7 +18,6 @@ class Butter(object):
         self.b, self.a = None, None
         self.sos = None
         self.zpk = None
-        print("Butter Created")
     #-------------------------------------------------
     def get_params(self, data):
         print(data)

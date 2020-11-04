@@ -20,7 +20,7 @@ class FilterMaker(object):
         self.Filtro = None
         self.err_msg = ""
         self.msg = ""
-        self.chk = False
+        self.chk = True
         self.name = None
         # self.color = None
 
@@ -75,7 +75,7 @@ class FilterMaker(object):
                 else:
                     self.err_msg = chkBR(data)[1]
                     return success
-            self.name = data['aprox'] + str(index) + '(N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
+            self.name = data['ft'] + data['aprox'] + str(index) + '(N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
         return success
 
     def setVisible(self, bool):
@@ -91,7 +91,7 @@ class FilterMaker(object):
         return False
 
     def __str__(self):
-        return f'name:{self.Filtro.name}'
+        return self.name
 
 """    def handlePlot(self,axes,canvas, plot):
         if plot == 'mag':

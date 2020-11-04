@@ -62,7 +62,8 @@ class AppCLass(QtWidgets.QWidget):
             elif self.identicalTwins(bob):
                 self.showmsg("No se admiten gemelos, aborten...")
             else:
-                self.showmsg(bob.msg)
+                self.showmsg(bob.name)
+
                 self.filter_list.append(bob)  # Lo sumamos a nuestra lista
                 self.manage_plot()
                 # self.filter_list[-1].handlePlot(self.axes_mag,self.canvas_mag) #dibujame papu
@@ -71,7 +72,7 @@ class AppCLass(QtWidgets.QWidget):
                 tempItem.setSizeHint(tempObject.sizeHint())
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
-                #self.manage_plot()
+                self.manage_plot()
 
 
     def inputConditions(self):
@@ -212,25 +213,30 @@ class AppCLass(QtWidgets.QWidget):
     def showmsg(self,msg):
         self.ui.textBrowser.append(msg)
 
+    def delete_PlotControlItem(self,MrMeeseeks):
+        self.filter_list.remove(MrMeeseeks.model)
+        self.ui.FilterList.takeItem(self.ui.FilterList.row(self.ui.FilterList.findItems(MrMeeseeks.model.name, QtCore.Qt.MatchExactly)))
+
     def manage_plot(self):
-        w = self.ui.GraphsWidget.currentWidget()
-        tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
-                self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
-                self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
-                self.ui.FaseTab: (self.axes_fas, self.canvas_fas, self.fasPlot),
-                self.ui.RetGrupTab: (self.axes_rdg, self.canvas_rdg, self.rdgPlot),
-                self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
-                self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
-        if w in tabs.keys():
-            axes, canvas, plotter = tabs[w]
-            axes.clear()
-            if self.filter_list[-1].ft != self.filter_list[0].ft:
-                temp = self.filter_list[-1]
-                self.filter_list.clear()
-                self.filter_list.append(temp)
-                self.ui.FilterList.clear()
-            axes.grid(which='both')
-            plotter(axes, canvas)
+        if len(self.filter_list):
+            w = self.ui.GraphsWidget.currentWidget()
+            tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
+                    self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
+                    self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
+                    self.ui.FaseTab: (self.axes_fas, self.canvas_fas, self.fasPlot),
+                    self.ui.RetGrupTab: (self.axes_rdg, self.canvas_rdg, self.rdgPlot),
+                    self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
+                    self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
+            if w in tabs.keys():
+                axes, canvas, plotter = tabs[w]
+                axes.clear()
+                if self.filter_list[-1].ft != self.filter_list[0].ft:
+                    temp = self.filter_list[-1]
+                    self.filter_list.clear()
+                    self.filter_list.append(temp)
+                    self.ui.FilterList.clear()
+                axes.grid(which='both')
+                plotter(axes, canvas)
 
     def magplot(self, axes, canvas):
         w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 10), num=10000) * 2 * np.pi
@@ -269,8 +275,8 @@ class AppCLass(QtWidgets.QWidget):
         axes.axhline(y=0, color='gray', linewidth=1)
         axes.axvline(x=0, color='gray', linewidth=1)
         d = self.furthestPZ()
-        axes.set_xlim(-d,d)
-        axes.set_ylim(-d,d)
+        axes.set_xlim(-d*1.1,d*1.1)
+        axes.set_ylim(-d*1.1,d*1.1)
         axes.set_xlabel("Real")
         axes.set_ylabel("Imaginary")
         axes.legend(loc='best')
@@ -325,11 +331,11 @@ class AppCLass(QtWidgets.QWidget):
             print(poles,zeros)
             if len(poles):
                 if len(zeros):
-                    dist.append(max(max(poles), max(zeros)))
+                    dist.append(max(max(abs(poles)), max(abs(zeros))))
                 else:
-                    dist.append(max(poles))
+                    dist.append(max(abs(poles)))
             elif len(zeros):
-                dist.append(max(zeros))
+                dist.append(max(abs(zeros)))
         return max(dist)
     def lowestFreq(self):
         lf = []
