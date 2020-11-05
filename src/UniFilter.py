@@ -101,8 +101,14 @@ class FilterMaker(object):
                 if my.Aa == other.Aa:
                     if my.Go == other.Go:
                         if self.compare(my.fc,other.fc):
-                                if self.ft == doppelganger.ft:
-                                    if self.aprox == doppelganger.aprox:
+                            if self.ft == doppelganger.ft:
+                                if self.aprox == doppelganger.aprox:
+                                    if self.ft == 'Group Delay':
+                                        if my.tol == doppelganger.Filtro.tol:
+                                            if my.retGroup == doppelganger.Filtro.retGroup:
+                                                if my.fo == doppelganger.Filtro.fo:
+                                                    return True
+                                    else:
                                         return True
         return False
 

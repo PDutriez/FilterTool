@@ -1,9 +1,9 @@
 ,0
-N,4
+N,0
 Q,auto
 E,auto
-aprox,Chebyshev 1
-ft,BP
+aprox,Bessel
+ft,Group Delay
 Go,9.0
 fpp,103.0
 fpm,60.0
@@ -11,6 +11,6 @@ fap,141.0
 fam,50.0
 Ap,4.0
 Aa,19.0
-tol,1.0
-retGroup,58.0
-fo,51.0
+tol,2.0
+retGroup,60.0
+fo,53.0
