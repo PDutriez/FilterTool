@@ -87,6 +87,7 @@ class AppCLass(QtWidgets.QWidget):
             self.ui.Filter_Image.setScaledContents(True)
 
         else:
+            self.type=None
             self.disableNormal()
             self.disableBesselGaus()
             self.ui.Filter_Image.clear()
