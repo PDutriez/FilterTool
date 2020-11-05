@@ -69,7 +69,7 @@ class Legendre(object):
                           self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, fc, E, 'LP')
 
-        print("fc:" + str(self.fc) + ",N:" + str(self.N))
+        print("fc:" + str(self.fc) + ",N:" + str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, btype = 'low', output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
@@ -81,7 +81,7 @@ class Legendre(object):
                                  self.Ap, self.Aa,analog = True)
         self.calc_NQE(N, fc, E, 'HP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N))
+        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, btype='highpass', output='ba')
         self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
@@ -113,8 +113,8 @@ class Legendre(object):
 # ----------------------------------------------------
 if __name__ == '__main__':
     prueba = Legendre()
-    data = {'N':5,'fpp':20,'fpm':0,'fam':0,'fap':50,'Ap':0.175,
-            'Aa':60,'E':'auto','Go':0,'Q':'auto'}
+    data = {'N':1,'fpp':1000,'fpm':0,'fam':0,'fap':2000,'Ap':3,
+            'Aa':18,'E':0,'Go':5,'Q':'auto'}
     prueba.LP(data)
     print(prueba.b, prueba.a)
     print(prueba.zpk)

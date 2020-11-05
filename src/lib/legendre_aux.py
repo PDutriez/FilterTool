@@ -9,57 +9,65 @@ Tiene dos funciones:
 from numpy import *
 from scipy import special, signal
 
+
 def ln(N):
     if N == 0:
         return [0]
     if N % 2:  # N impar
         k = (N - 1) // 2
-        a0 = 1 / (sqrt(2)*(k + 1))
+        a0 = 1 / (sqrt(2) * (k + 1))
+
         poly = poly1d([a0])
         for i in range(1, k + 1):
-            ai = a0*(2*i + 1)
-            new_poly = ai*special.legendre(i)
+            ai = a0 * (2 * i + 1)
+            new_poly = ai * special.legendre(i)
             poly = polyadd(poly, new_poly)
         poly = polymul(poly, poly)  # Potencia
         poly = polyint(poly)  # Integro
         b = poly1d([2, 0, -1])  # Borde superior
         a = poly1d([-1])  # Borde inferior
+
     else:  # N par
         k = (N - 2) // 2
         if k % 2:  # k impar
             b0 = 1 / sqrt((k + 1) * (k + 2))
-            poly = poly1d(b0)
+            poly = poly1d(0)
+
             for i in range(1, k + 1):
-                if i % 2: # i impar
-                    bi = b0*(2*i + 1)
-                    new_poly = bi*special.legendre(i)
-                    poly = polyadd(poly, new_poly)
-        else:  # k par
-            b0 = 0
-            poly = poly1d(b0)
-            for i in range(1, k + 1):
-                if not i % 2: # i par
+                if i % 2:  # i impar
                     bi = b0 * (2 * i + 1)
                     new_poly = bi * special.legendre(i)
                     poly = polyadd(poly, new_poly)
-        poly = polymul(poly, poly) #Potencia
-        poly = polymul(poly, poly1d([1, 1])) #Multiplico por lo de afuera
-        poly = polyint(poly) #Integro
-        b = poly1d([2, 0, -1]) #Borde superior
-        a = poly1d([-1]) #Borde inferior
+        else:  # k par
+            b0 = 1 / sqrt((k + 1) * (k + 2))
+            poly = poly1d(b0)
+
+            for i in range(1, k + 1):
+                if not i % 2:  # i par
+                    bi = b0 * (2 * i + 1)
+                    new_poly = bi * special.legendre(i)
+                    poly = polyadd(poly, new_poly)
+
+        poly = polymul(poly, poly)  # Potencia
+        poly = polymul(poly, poly1d([1, 1]))  # Multiplico por lo de afuera
+        poly = polyint(poly)  # Integro
+        b = poly1d([2, 0, -1])  # Borde superior
+        a = poly1d([-1])  # Borde inferior
 
     return polysub(polyval(poly, b), polyval(poly, a))
 
+
 def legendre(N, E, btype, output):
-    myln = E*ln(N)
+    myln = (E**2)*ln(N)
     gain = 1
-    den = polyadd(poly1d([1]),myln)
+    den = polyadd(poly1d([1]), myln)
+    print(den, den.roots)
     poles = []
     for pole in 1j * den.roots:
         if pole.real < 0:
             new_pole = complex(pole.real if abs(pole.real) > 1e-10 else 0,
                                 pole.imag if abs(pole.imag) > 1e-10 else 0)
-            gain /= abs(new_pole)
+            gain *= abs(new_pole)
             poles.append(new_pole)
 
     if btype == 'low' or btype == 'lowpass':
@@ -71,7 +79,8 @@ def legendre(N, E, btype, output):
     elif btype == 'bandstop':
         z, p, k = signal.lp2bs_zpk([], poles, gain)
 
-
+    print("input",[], poles, gain)
+    print(btype,z, p ,k)
 
     formats = {'zpk':(z, p, k),
                'ba':signal.zpk2tf(z, p, k),

@@ -97,7 +97,7 @@ class Butter(object):
                                  self.Ap,self.Aa, analog = True)
         self.calc_NQE(N, fc,'LP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N))
+        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         #self.z, self.p, self.k = sos2zpk(self.sos)
@@ -109,7 +109,7 @@ class Butter(object):
                                  self.Ap, self.Aa,analog = True)
         self.calc_NQE(N, fc,'HP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N))
+        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='highpass', analog=True, output='ba')
         self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
@@ -141,9 +141,10 @@ class Butter(object):
 # ----------------------------------------------------
 if __name__ == '__main__':
     prueba = Butter()
-    data = {'N':2,'fpp':20,'fpm':0,'fam':0,'fap':50,'Ap':0.175,'Aa':60,'E':'auto'}
-    prueba.HP(data)
-    print(prueba.sos)
-    print(prueba.z,prueba.p,prueba.k)
+    data = {'N': 1, 'fpp': 1000, 'fpm': 0, 'fam': 0, 'fap': 2000, 'Ap': 3,
+            'Aa': 18, 'E': 0, 'Go': 5, 'Q': 'auto'}
+    prueba.LP(data)
+    print(prueba.b, prueba.a)
+    print(prueba.zpk)
     pass
     #Calculo que debería hacer algo...
