@@ -242,7 +242,7 @@ class AppCLass(QtWidgets.QWidget):
             plotter(axes, canvas)
         else:            canvas.draw()
     def magplot(self, axes, canvas):
-        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 10), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 100), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b,f.Filtro.a),w=w)
@@ -254,7 +254,7 @@ class AppCLass(QtWidgets.QWidget):
         canvas.draw()
 
     def atePlot(self, axes, canvas):
-        w = np.logspace(np.log10(self.highestFreq() / 10), np.log10(self.lowestFreq() * 10), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(self.highestFreq() / 10), np.log10(self.lowestFreq() * 1000), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.a, f.Filtro.b), w=w)

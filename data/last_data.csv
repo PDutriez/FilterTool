@@ -1,13 +1,13 @@
 ,0
-N,3
+N,7
 Q,auto
-E,auto
-aprox,Chebyshev 1
-ft,BP
+E,36
+aprox,Chebyshev 2
+ft,BR
 Go,5.0
-fpp,200.0
+fpp,102.0
 fpm,60.0
-fap,250.0
+fap,140.0
 fam,50.0
 Ap,3.0
-Aa,40.0
+Aa,18.0
