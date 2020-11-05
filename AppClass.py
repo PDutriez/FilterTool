@@ -19,13 +19,17 @@ class AppCLass(QtWidgets.QWidget):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.GraphsWidget.setCurrentIndex(0)
+        self.hideAll()
+
+
+
         # MY STUFF: cosas que necesito instanciar externas a Qt
         self.createBodePlotsCanvas()
         self.plotDict = {}
         self.filter_list = []
         if hand.read_data():
             self.recover(hand.read_data())
-
+        self.showSpecs(self.ui.CBFilters.currentText())
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
@@ -34,20 +38,31 @@ class AppCLass(QtWidgets.QWidget):
 
     def change_ParamInputs(self):
         # la idea es que no muestre todas las fpp... y App... dependiendo del filtro
+        self.hideAll()
         filtro = self.ui.CBFilters.currentText()
         if filtro == 'LP':
+            self.showSpecs('LP')
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'HP':
+            self.showSpecs('HP')
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/HP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BP':
+            self.showSpecs('BP')
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BR':
+            self.showSpecs('BR')
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BR.png"))
             self.ui.Filter_Image.setScaledContents(True)
+        elif filtro == 'Group Delay':
+            self.showRetGroup()
+            self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/GD.png"))
+            self.ui.Filter_Image.setScaledContents(True)
+
         else:
+            self.ui.Filter_Image.clear()
             print('Filtro Incorrecto')
 
     def CreateNew(self):
@@ -372,6 +387,75 @@ class AppCLass(QtWidgets.QWidget):
             else:
                 print('Filtro Incorrecto: '+filtro)
         return max(hf)
+
+    def hideAll(self):
+       self.ui.label_tol.setHidden(True)
+       self.ui.SpinBoxTol.setHidden(True)
+       self.ui.label_ft.setHidden(True)
+       self.ui.SpinBoxFt.setHidden(True)
+       self.ui.label_retgroup.setHidden(True)
+       self.ui.SpinBoxRetGroup.setHidden(True)
+
+       self.ui.label_Ap.setHidden(True)
+       self.ui.SpinBoxAp.setHidden(True)
+       self.ui.label_Aa.setHidden(True)
+       self.ui.SpinBoxAa.setHidden(True)
+       self.ui.label_fpm.setHidden(True)
+       self.ui.SpinBoxFpminus.setHidden(True)
+       self.ui.label_fpp.setHidden(True)
+       self.ui.SpinBoxFpplus.setHidden(True)
+       self.ui.label_fap.setHidden(True)
+       self.ui.SpinBoxFaplus.setHidden(True)
+       self.ui.label_fam.setHidden(True)
+       self.ui.SpinBoxFaminus.setHidden(True)
+
+       self.ui.label_Go.setHidden(True)
+       self.ui.SpinBoxGain.setHidden(True)
+
+    def showSpecs(self,type):
+        if type != 'LP' and type != 'HP':
+            self.ui.label_fpm.setHidden(False)
+            self.ui.SpinBoxFpminus.setHidden(False)
+            self.ui.label_fam.setHidden(False)
+            self.ui.SpinBoxFaminus.setHidden(False)
+            self.ui.GridSpecs.addWidget(self.ui.label_fap, 3, 0, 1, 1)
+            self.ui.GridSpecs.addWidget(self.ui.SpinBoxFaplus, 3, 1, 1, 1)
+        else:
+            self.ui.GridSpecs.addWidget(self.ui.label_fap, 2, 0, 1, 1)
+            self.ui.GridSpecs.addWidget(self.ui.SpinBoxFaplus, 2, 1, 1, 1)
+            self.ui.GridSpecs.addWidget(self.ui.SpinBoxAp, 2, 3, 1, 1)
+            self.ui.GridSpecs.addWidget(self.ui.label_Ap, 2, 2, 1, 1)
+        self.ui.label_Ap.setHidden(False)
+        self.ui.SpinBoxAp.setHidden(False)
+        self.ui.label_Aa.setHidden(False)
+        self.ui.SpinBoxAa.setHidden(False)
+        self.ui.label_fpp.setHidden(False)
+        self.ui.SpinBoxFpplus.setHidden(False)
+        self.ui.label_fap.setHidden(False)
+        self.ui.SpinBoxFaplus.setHidden(False)
+        self.ui.label_Go.setHidden(False)
+        self.ui.SpinBoxGain.setHidden(False)
+        self.ui.GridSpecs.addWidget(self.ui.SpinBoxFpplus, 1, 1, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.label_fpp, 1, 0, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.label_fpm, 2, 0, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.SpinBoxFpminus, 2, 1, 1, 1)
+
+    def showRetGroup(self):
+        self.ui.label_tol.setHidden(False)
+        self.ui.SpinBoxTol.setHidden(False)
+        self.ui.label_ft.setHidden(False)
+        self.ui.SpinBoxFt.setHidden(False)
+        self.ui.label_retgroup.setHidden(False)
+        self.ui.SpinBoxRetGroup.setHidden(False)
+        self.ui.label_Go.setHidden(False)
+        self.ui.SpinBoxGain.setHidden(False)
+
+        self.ui.GridSpecs.addWidget(self.ui.label_retgroup, 1, 0, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.SpinBoxRetGroup, 1, 1, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.label_ft, 2, 0, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.SpinBoxFt, 2, 1, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.label_tol, 2, 2, 1, 1)
+        self.ui.GridSpecs.addWidget(self.ui.SpinBoxTol, 2, 3, 1, 1)
 # ------------------------------------------------------------
 if __name__ == '__main__':
     MyFilterToolApp = QtWidgets.QApplication(sys.argv)
