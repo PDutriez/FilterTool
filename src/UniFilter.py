@@ -8,6 +8,8 @@ from src.filters_aproxs.cheby1 import Cheby1
 from src.filters_aproxs.cheby2 import Cheby2
 from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
+from src.filters_aproxs.legendre import Legendre
+
 from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR
 import numpy as np
 import scipy.signal as ss
@@ -32,7 +34,7 @@ class FilterMaker(object):
             , 'Chebyshev 1': Cheby1()
             , 'Chebyshev 2': Cheby2()
             , 'Bessel': Bessel()
-            # ,'Legendre': #Not yet implemented
+            , 'Legendre': Legendre()
             # ,'Gauss':    #Not yet implemented
             , 'Cauer': Cauer()
         }
