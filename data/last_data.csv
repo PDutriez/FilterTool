@@ -1,16 +1,16 @@
 ,0
-N,4
+N,0
 Q,auto
 E,auto
-aprox,Butterworth
-ft,LP
-Go,5.0
+aprox,Bessel
+ft,Group Delay
+Go,6.0
 fpp,102.0
 fpm,60.0
 fap,140.0
 fam,50.0
 Ap,3.0
 Aa,18.0
-tol,0.0
-retGroup,0.0
-fo,0.0
+tol,24.0
+retGroup,28.0
+fo,34.0

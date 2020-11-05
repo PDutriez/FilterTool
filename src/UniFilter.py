@@ -10,7 +10,7 @@ from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
 from src.filters_aproxs.legendre import Legendre
 
-from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR
+from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR, chkGD
 import numpy as np
 import scipy.signal as ss
 
@@ -79,6 +79,13 @@ class FilterMaker(object):
                 else:
                     self.err_msg = chkBR(data)[1]
                     return success
+            elif data['ft'] == 'Group Delay':
+                if chkGD(data)[0]:
+                    self.Filtro.GD(data)
+                    success = True
+                else:
+                    self.err_msg = chkGD(data)[1]
+                    return success
             self.name = data['ft'] + data['aprox'] +'(ID:' + str(index)+ ', N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
         return success
 
@@ -92,10 +99,17 @@ class FilterMaker(object):
             if my.fap == other.fap and my.fam == other.fam and my.Ap == other.Ap:
                 if my.Aa == other.Aa:
                     if my.Go == other.Go:
-                        if my.fc.all() == other.fc.all():
-                            if self.ft == doppelganger.ft:
-                                if self.aprox == doppelganger.aprox:
-                                    return True
+                        if not isinstance(my.fc, float):
+                            if my.fc.all() == other.fc.all():
+                                if my.fc == other.fc:
+                                    if self.ft == doppelganger.ft:
+                                        if self.aprox == doppelganger.aprox:
+                                            return True
+                        else:
+                            if my.fc == other.fc:
+                                if self.ft == doppelganger.ft:
+                                    if self.aprox == doppelganger.aprox:
+                                        return True
         return False
 
     def __str__(self):

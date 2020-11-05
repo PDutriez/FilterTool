@@ -192,6 +192,9 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.SpinBoxFaminus.setValue(float(data['fam'][0]))
         self.ui.SpinBoxAp.setValue(float(data['Ap'][0]))
         self.ui.SpinBoxAa.setValue(float(data['Aa'][0]))
+        self.ui.SpinBoxTol.setValue(float(data['tol'][0]))
+        self.ui.SpinBoxRetGroup.setValue(float(data['retGroup'][0]))
+        self.ui.SpinBoxFt.setValue(float(data['fo'][0]))
 
     def createBodePlotsCanvas(self):
         # creo una figura por pestaña
@@ -400,6 +403,8 @@ class AppCLass(QtWidgets.QWidget):
                 lf.append(f.Filtro.fap)
             elif filtro == 'BP' or filtro == 'BR':
                 lf.append(f.Filtro.fam)
+            elif filtro == 'Group Delay':
+                lf.append(f.Filtro.fo)
             else:
                 print('Filtro Incorrecto')
         return min(lf)
@@ -413,6 +418,8 @@ class AppCLass(QtWidgets.QWidget):
                 hf.append(f.Filtro.fpp)
             elif filtro == 'BP' or filtro == 'BR':
                 hf.append(f.Filtro.fap)
+            elif filtro == 'Group Delay':
+                hf.append(f.Filtro.fo)
             else:
                 print('Filtro Incorrecto: '+filtro)
         return max(hf)

@@ -171,6 +171,23 @@ def chkBR(data):
         msg = "Error: fpm must be greater than fam"
     return success,msg
 #-----------------------------------------------------
+def chkGD(data):
+    success = False
+    msg = "Ok"
+    if data['tol']>0:
+        if data['fo']>0:
+            if data['retGroup']>0:
+                success =True
+            else:
+                msg = "Error: review RetGroup"
+        else:
+            msg = "Error: review Fo"
+    else:
+        msg = "Error: review tol"
+    return success,msg
+
+
+#-----------------------------------------------------
 if __name__=='__main__':
     pass
 
