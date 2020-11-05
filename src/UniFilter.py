@@ -107,7 +107,7 @@ class FilterMaker(object):
         return False
 
     def compare(self,a,b):
-        return a.all() == b.all()
+        return str(a) == str(b)
 
 
     def __str__(self):
