@@ -22,6 +22,7 @@ class FilterMaker(object):
         self.msg = ""
         self.chk = True
         self.name = None
+        self.color = ''
         # self.color = None
 
     def make_filter(self, data, index):
@@ -76,7 +77,7 @@ class FilterMaker(object):
                 else:
                     self.err_msg = chkBR(data)[1]
                     return success
-            self.name = data['ft'] + data['aprox'] + str(index) + '(N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
+            self.name = data['ft'] + data['aprox'] +'(ID:' + str(index)+ ', N:' + str(self.Filtro.N) + ')'  # Le pusimos un nombre
         return success
 
     def setVisible(self, bool):

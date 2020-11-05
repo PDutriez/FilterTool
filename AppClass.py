@@ -251,6 +251,7 @@ class AppCLass(QtWidgets.QWidget):
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
         axes.minorticks_on()
+        axes.legend(loc='best')
         canvas.draw()
 
     def atePlot(self, axes, canvas):
@@ -263,6 +264,7 @@ class AppCLass(QtWidgets.QWidget):
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
         axes.minorticks_on()
+        axes.legend(loc='best')
         canvas.draw()
 
     def pazPlot(self, axes, canvas):
@@ -295,6 +297,7 @@ class AppCLass(QtWidgets.QWidget):
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Phase [º]')
         axes.minorticks_on()
+        axes.legend(loc='best')
         canvas.draw()
 
     def rdgPlot(self, axes, canvas):
@@ -306,6 +309,7 @@ class AppCLass(QtWidgets.QWidget):
         axes.set_ylabel('Group delay [samples]')
         axes.set_xlabel('Frequency [Hz]')
         axes.minorticks_on()
+        axes.legend(loc='best')
         canvas.draw()
 
     def impPlot(self, axes, canvas):
@@ -316,6 +320,7 @@ class AppCLass(QtWidgets.QWidget):
                 axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
+        axes.legend(loc='best')
         canvas.draw()
     def escPlot(self, axes, canvas):
         for f in self.filter_list:
@@ -325,6 +330,7 @@ class AppCLass(QtWidgets.QWidget):
                 axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
+        axes.legend(loc='best')
         canvas.draw()
     def furthestPZ(self):
         dist = []

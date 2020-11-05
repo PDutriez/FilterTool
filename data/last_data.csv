@@ -1,8 +1,8 @@
 ,0
-N,7
+N,8
 Q,auto
 E,auto
-aprox,Bessel
+aprox,Butterworth
 ft,LP
 Go,5.0
 fpp,102.0
