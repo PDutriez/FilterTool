@@ -70,7 +70,7 @@ class Legendre(object):
         self.calc_NQE(N, fc, E, 'LP')
 
         print("fc:" + str(self.fc) + ",N:" + str(self.N)+",E:"+str(self.E))
-        self.b, self.a = legendre(self.N, self.E, btype = 'low', output='ba')
+        self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype = 'lowpass', output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
@@ -82,7 +82,7 @@ class Legendre(object):
         self.calc_NQE(N, fc, E, 'HP')
 
         print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
-        self.b, self.a = legendre(self.N, self.E, btype='highpass', output='ba')
+        self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype='highpass', output='ba')
         self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
@@ -94,7 +94,8 @@ class Legendre(object):
                                       self.Ap, self.Aa,analog=True)
         self.calc_NQE(N, fc,E, 'BP')
 
-        self.b, self.a = legendre(self.N, self.E, btype='bandpass', analog=True)
+        self.b, self.a = legendre(self.N, self.E,[self.fam*(2*pi),self.fpp*(2*pi)],
+                                  btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
@@ -106,7 +107,8 @@ class Legendre(object):
                         self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, fc, E, 'BR')
 
-        self.b, self.a = legendre(self.N, self.E, btype='bandstop', analog=True)
+        self.b, self.a = legendre(self.N, self.E, [self.fam*(2*pi),self.fpp*(2*pi)],
+                                  btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)

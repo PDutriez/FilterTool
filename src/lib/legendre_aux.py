@@ -57,8 +57,10 @@ def ln(N):
     return polysub(polyval(poly, b), polyval(poly, a))
 
 
-def legendre(N, E, btype, output):
-    myln = (E**2)*ln(N)
+def legendre(N, E, Wn, btype='lowpass', output='ba'):
+    myln = ln(N)
+    #myln = (E ** 2) * ln(N) #Cambio necesario por como implementamos la frecuencia
+    Wn = asarray(Wn)
     gain = 1
     den = polyadd(poly1d([1]), myln)
     print(den, den.roots)
@@ -69,26 +71,40 @@ def legendre(N, E, btype, output):
                                 pole.imag if abs(pole.imag) > 1e-10 else 0)
             gain *= abs(new_pole)
             poles.append(new_pole)
+    warped = Wn
+    z, p, k = ([], poles, gain)
+    #Transformo mi LP filter al resto
+    if btype in ('lowpass', 'highpass'):
+        if size(Wn) != 1:
+            raise ValueError('Must specify a single critical frequency Wn for lowpass or highpass filter')
 
-    if btype == 'low' or btype == 'lowpass':
-        z, p, k = signal.lp2lp_zpk([], poles, gain)
-    elif btype == 'highpass':
-        z, p, k = signal.lp2hp_zpk([], poles, gain)
-    elif btype == 'bandpass':
-        z, p, k = signal.lp2bp_zpk([], poles, gain)
-    elif btype == 'bandstop':
-        z, p, k = signal.lp2bs_zpk([], poles, gain)
+        if btype == 'lowpass':
+            z, p, k = signal.lp2lp_zpk(z, p, k, wo=warped)
+        elif btype == 'highpass':
+            z, p, k = signal.lp2hp_zpk(z, p, k, wo=warped)
+    elif btype in ('bandpass', 'bandstop'):
+        try:
+            bw = warped[1] - warped[0]
+            wo = sqrt(warped[0] * warped[1])
+        except IndexError:
+            raise ValueError('Wn must specify start and stop frequencies for bandpass or bandstop filter')
 
-    print("input",[], poles, gain)
-    print(btype,z, p ,k)
-
-    formats = {'zpk':(z, p, k),
-               'ba':signal.zpk2tf(z, p, k),
-               'sos':signal.zpk2sos(z, p, k)}
-    if output in formats.keys():
-        return formats[output]
+        if btype == 'bandpass':
+            z, p, k = signal.lp2bp_zpk(z, p, k, wo=wo, bw=bw)
+        elif btype == 'bandstop':
+            z, p, k = signal.lp2bs_zpk(z, p, k, wo=wo, bw=bw)
     else:
-        return 0
+        raise NotImplementedError("'%s' not implemented in iirfilter." % btype)
+
+    # print("input",[], poles, gain)
+    # print(btype,z, p ,k)
+
+    if output == 'zpk':
+        return z, p, k
+    elif output == 'ba':
+        return signal.zpk2tf(z, p, k)
+    elif output == 'sos':
+        return signal.zpk2sos(z, p, k)
 
 def legord(wp, ws, gpass, gstop, analog=False):
     """
