@@ -9,6 +9,7 @@ from src.filters_aproxs.cheby2 import Cheby2
 from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
 from src.filters_aproxs.legendre import Legendre
+from collections.abc import Iterable
 
 from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR, chkGD
 import numpy as np
@@ -99,18 +100,15 @@ class FilterMaker(object):
             if my.fap == other.fap and my.fam == other.fam and my.Ap == other.Ap:
                 if my.Aa == other.Aa:
                     if my.Go == other.Go:
-                        if not isinstance(my.fc, float):
-                            if my.fc.all() == other.fc.all():
-                                if my.fc == other.fc:
-                                    if self.ft == doppelganger.ft:
-                                        if self.aprox == doppelganger.aprox:
-                                            return True
-                        else:
-                            if my.fc == other.fc:
+                        if self.compare(my.fc,other.fc):
                                 if self.ft == doppelganger.ft:
                                     if self.aprox == doppelganger.aprox:
                                         return True
         return False
+
+    def compare(self,a,b):
+        return a.all() == b.all()
+
 
     def __str__(self):
         return self.name
