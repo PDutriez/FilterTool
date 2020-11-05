@@ -32,8 +32,7 @@ class AppCLass(QtWidgets.QWidget):
             self.recover(hand.read_data())
         self.showSpecs(self.ui.CBFilters.currentText())
         self.type = None
-        self.disableNormal()
-        self.disableBesselGaus()
+        self.disableAllAprox()
 
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
@@ -48,48 +47,47 @@ class AppCLass(QtWidgets.QWidget):
         if filtro == 'LP':
             self.showSpecs('LP')
             if not self.type:
-                self.enableAllAprox()
-                self.disableBesselGaus()
+                self.disableAllAprox()
+                self.enableNormal()
                 self.type=True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'HP':
             self.showSpecs('HP')
             if not self.type:
-                self.enableAllAprox()
-                self.disableBesselGaus()
+                self.disableAllAprox()
+                self.enableNormal()
                 self.type=True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/HP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BP':
             self.showSpecs('BP')
             if not self.type:
-                self.enableAllAprox()
-                self.disableBesselGaus()
+                self.disableAllAprox()
+                self.enableNormal()
                 self.type=True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BR':
             self.showSpecs('BR')
             if not self.type:
-                self.enableAllAprox()
-                self.disableBesselGaus()
+                self.disableAllAprox()
+                self.enableNormal()
                 self.type=True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BR.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'Group Delay':
             self.showRetGroup()
             if self.type or self.type == None:
-                self.enableAllAprox()
-                self.disableNormal()
+                self.disableAllAprox()
+                self.enableBesselGauss()
                 self.type=False
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/GD.png"))
             self.ui.Filter_Image.setScaledContents(True)
 
         else:
             self.type=None
-            self.disableNormal()
-            self.disableBesselGaus()
+            self.disableAllAprox()
             self.ui.Filter_Image.clear()
             print('Filtro Incorrecto')
 
@@ -489,23 +487,42 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.GridSpecs.addWidget(self.ui.SpinBoxTol, 2, 3, 1, 1)
 
 
-    def enableAllAprox(self):
-        variant_disable = QtCore.QVariant(1 | 32)
-        for it in range(0,self.ui.CBAprox.count()):
-            self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
+    def disableAllAprox(self):
+        self.ui.CBAprox.clear()
+        self.ui.CBAprox.addItem('')
+        _translate = QtCore.QCoreApplication.translate
+        self.ui.CBAprox.setItemText(0, _translate("MainWindow", "Aproximación"))
+        #
+        # variant_disable = QtCore.QVariant(1 | 32)
+        # for it in range(0,self.ui.CBAprox.count()):
+        #     self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
 
-    def disableBesselGaus(self):
-        self.ui.CBAprox.setCurrentText('Aproximación')
-        variant_disable = QtCore.QVariant(0)
-        self.ui.CBAprox.setItemData(4, variant_disable, QtCore.Qt.UserRole - 1)
-        self.ui.CBAprox.setItemData(6, variant_disable, QtCore.Qt.UserRole - 1)
+    def enableNormal(self):
+        while self.ui.CBAprox.count()<6:
+            self.ui.CBAprox.addItem('')
+        _translate = QtCore.QCoreApplication.translate
+        self.ui.CBAprox.setItemText(1, _translate("MainWindow", "Butterworth"))
+        self.ui.CBAprox.setItemText(2, _translate("MainWindow", "Chebyshev 1"))
+        self.ui.CBAprox.setItemText(3, _translate("MainWindow", "Chebyshev 2"))
+        self.ui.CBAprox.setItemText(4, _translate("MainWindow", "Legendre"))
+        self.ui.CBAprox.setItemText(5, _translate("MainWindow", "Cauer"))
 
-    def disableNormal(self):
-        self.ui.CBAprox.setCurrentText('Aproximación')
-        variant_disable = QtCore.QVariant(0)
-        for it in range(0,self.ui.CBAprox.count()):
-            if it!=4 and it!=6:
-                self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
+        # self.ui.CBAprox.setCurrentText('Aproximación')
+        # variant_disable = QtCore.QVariant(0)
+        # self.ui.CBAprox.setItemData(4, variant_disable, QtCore.Qt.UserRole - 1)
+        # self.ui.CBAprox.setItemData(6, variant_disable, QtCore.Qt.UserRole - 1)
+
+    def enableBesselGauss(self):
+        while self.ui.CBAprox.count()<3:
+            self.ui.CBAprox.addItem('')
+        _translate = QtCore.QCoreApplication.translate
+        self.ui.CBAprox.setItemText(1, _translate("MainWindow", "Bessel"))
+        self.ui.CBAprox.setItemText(2, _translate("MainWindow", "Gauss"))
+        # self.ui.CBAprox.setCurrentText('Aproximación')
+        # variant_disable = QtCore.QVariant(0)
+        # for it in range(0,self.ui.CBAprox.count()):
+        #     if it!=4 and it!=6:
+        #         self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
 
 
 # ------------------------------------------------------------
