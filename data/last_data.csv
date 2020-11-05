@@ -1,9 +1,9 @@
 ,0
 N,7
 Q,auto
-E,36
-aprox,Chebyshev 2
-ft,BR
+E,auto
+aprox,Bessel
+ft,LP
 Go,5.0
 fpp,102.0
 fpm,60.0

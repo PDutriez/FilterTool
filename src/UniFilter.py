@@ -35,6 +35,7 @@ class FilterMaker(object):
             # ,'Gauss':    #Not yet implemented
             , 'Cauer': Cauer()
         }
+        self.aprox = data['aprox']
         if data['aprox'] not in filtros.keys():
             self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
         elif data['ft'] == "Tipo de Filtro":
@@ -90,7 +91,8 @@ class FilterMaker(object):
                     if my.Go == other.Go:
                         if my.fc.all() == other.fc.all():
                             if self.ft == doppelganger.ft:
-                                return True
+                                if self.aprox == doppelganger.aprox:
+                                    return True
         return False
 
     def __str__(self):
