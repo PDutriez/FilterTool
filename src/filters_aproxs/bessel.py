@@ -62,7 +62,7 @@ class Bessel(object):
         for i in range(0,N):
             n+=1
             bn,an = signal.bessel(n,1,'low',analog=True,output='ba',norm='delay')
-            w,h = signal.freqs(bn,an,worN=np.logspace(-1, np.log10(woN)+1, num=100000))
+            w,h = signal.freqs(bn,an,worN=np.logspace(-1, np.log10(woN)+1, num=2000))
             retGroup_f = -np.diff(np.unwrap(np.angle(h)))/np.diff(w)   #el retardo de grupo es la derivada de la fase respecto de w
             minPos = self.minPos(w,woN)
             if retGroup_f[minPos] >= (1-tolN):

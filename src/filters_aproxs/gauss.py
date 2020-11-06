@@ -17,12 +17,12 @@ import numpy as np
 import math
 import time
 
+
 class Gauss(object):
 
     def __init__(self):
         super(Gauss, self).__init__()
         self.b, self.a = None, None
-        self.fc =None
 
     # -------------------------------------------------
     def get_params(self, data):
@@ -45,14 +45,14 @@ class Gauss(object):
     def GD(self, data):
         self.get_params(data)
 
-        N,fc = self.Gaussord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
+        N,self.fc = self.Gaussord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
 
         if self.N == 0:
             self.N = N
         elif self.N > 24:  # de nuevo el n q invente
             self.N = 24
 
-        self.b, self.a = self.Gauss(self.N,fc)
+        self.b, self.a = self.gauss_tf(self.N,self.fc)
         self.b = 10 ** (self.Go / 20) * self.b
 
         print(self.b, self.a)
@@ -60,21 +60,20 @@ class Gauss(object):
     def Gaussord(self,wo,tol,retGroup,N):
         woN = wo * retGroup * 1e-6
         tolN = tol / 100
-        den = np.poly1d(1)
-        n=0
-        for it in range(0,N):
-            n+=1
-            an = den + self.nextTerm(1,it)
-            w, h = signal.freqs([1], an.c, worN=np.logspace(-1, np.log10(woN) + 1, num=100000))
+        it=0
+        for it in range(1,N+1):
+            bn,an = self.gauss_tf(it,woN)
+            w, h = signal.freqs(bn, an, worN=np.logspace(-1, np.log10(woN) + 1, num=2000))
             retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)  # el retardo de grupo es la derivada de la fase respecto de w
             minPos = self.minPos(w, woN)
-            if retGroup_f[minPos] >= (1-tolN):
-                break
-        return n,1/(retGroup*1e-6)
+            if retGroup_f[minPos] >= (1 - tolN):
+                  break
+        return it, 1 / (retGroup * 1e-6)
 
 
     def nextTerm(self,tol,k):
         #newTerm= [(self.tol**(k+1)/math.factorial(k+1))]
+        newTerm = np.zeros(2*(k+1))
         newTerm= [(tol**(k+1)/math.factorial(k+1))]  #Normalizado
 
         for it in range(0,2*(1+k)):
@@ -87,27 +86,21 @@ class Gauss(object):
             new_w.append(abs(it-woN))#busco el valor q mas se parezca a woN
         return new_w.index(min(new_w))#devuelvo la posicion del elemento q cumpla esa condicion
 
-    def Gauss(self,N,tol):
-        bn = np.poly1d(1)
-        for it in range(0,N):
-            bn += self.nextTerm(tol,it)
-        # w, h = signal.freqs(bn.c, 1, worN=np.logspace(-1, np.log10(wo) + 1, num=100000))
-        # retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
-        return bn,1
+
 
     # -----------------------------------------------------------------------------
     def gauss_tf(self, N, Wn, btype='low', output='ba'):
-        Wn = asarray(Wn)
+        Wn = np.asarray(Wn)
         # MODULO CUADRADO DE LA FUNCION TRANSFERENCIA
         gain = 1
-        poly = poly1d(1)
-        for n in arange(1, N + 1):
-            base = zeros(n + 1)
-            base[0] = 1 / factorial(n)
-            new_poly = poly1d(base)
-            poly = polyadd(poly, new_poly)
+        poly = np.poly1d(1)
+        for n in np.arange(1, N + 1):
+            base = np.zeros(n + 1)
+            base[0] = 1 / np.factorial(n)
+            new_poly = np.poly1d(base)
+            poly = np.polyadd(poly, new_poly)
 
-        den = polyval(poly, poly1d([1, 0, 0]))
+        den = np.polyval(poly, np.poly1d([1, 0, 0]))
 
         poles = []
         for pole in 1j * den.roots:
@@ -120,7 +113,7 @@ class Gauss(object):
         z, p, k = ([], poles, gain)
         # Transformo mi LP filter al resto
         if btype in ('lowpass', 'highpass'):
-            if size(Wn) != 1:
+            if np.size(Wn) != 1:
                 raise ValueError('Must specify a single critical frequency Wn for lowpass or highpass filter')
 
             if btype == 'lowpass':
@@ -130,7 +123,7 @@ class Gauss(object):
         elif btype in ('bandpass', 'bandstop'):
             try:
                 bw = warped[1] - warped[0]
-                wo = sqrt(warped[0] * warped[1])
+                wo = np.sqrt(warped[0] * warped[1])
             except IndexError:
                 raise ValueError('Wn must specify start and stop frequencies for bandpass or bandstop filter')
 
