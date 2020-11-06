@@ -19,7 +19,6 @@ class Bessel(object):
     def __init__(self):
         super(Bessel, self).__init__()
         self.b, self.a = None, None
-        self.fc =None
 
     #-------------------------------------------------
     def get_params(self, data):
@@ -41,13 +40,13 @@ class Bessel(object):
     def GD(self, data):
         self.get_params(data)
 
-        N, fc = self.bessord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
+        N, self.fc = self.bessord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
         if self.N == 0:
             self.N = N
         elif self.N > 24:#de nuevo el n q invente
             self.N = 24
 
-        self.b,self.a = signal.bessel(self.N, fc, 'low', True, 'ba', norm='delay')
+        self.b,self.a = signal.bessel(self.N, self.fc, 'low', True, 'ba', norm='delay')
         self.b = 10**(self.Go/20)*self.b
 
         print(self.b, self.a)
@@ -62,7 +61,7 @@ class Bessel(object):
         for i in range(0,N):
             n+=1
             bn,an = signal.bessel(n,1,'low',analog=True,output='ba',norm='delay')
-            w,h = signal.freqs(bn,an,worN=np.logspace(-1, np.log10(woN)+1, num=2000))
+            w,h = signal.freqs(bn,an,worN=np.logspace(-1, np.log10(woN)+3, num=2000))
             retGroup_f = -np.diff(np.unwrap(np.angle(h)))/np.diff(w)   #el retardo de grupo es la derivada de la fase respecto de w
             minPos = self.minPos(w,woN)
             if retGroup_f[minPos] >= (1-tolN):
