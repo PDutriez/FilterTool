@@ -9,6 +9,7 @@ from src.filters_aproxs.cheby2 import Cheby2
 from src.filters_aproxs.bessel import Bessel
 from src.filters_aproxs.cauer import Cauer
 from src.filters_aproxs.legendre import Legendre
+from src.filters_aproxs.gauss import Gauss
 from collections.abc import Iterable
 
 from src.lib.handy import test_N, chkLP, chkHP, chkBP, chkBR, chkGD
@@ -36,7 +37,7 @@ class FilterMaker(object):
             , 'Chebyshev 2': Cheby2()
             , 'Bessel': Bessel()
             , 'Legendre': Legendre()
-            # ,'Gauss':    #Not yet implemented
+            ,'Gauss': Gauss()
             , 'Cauer': Cauer()
         }
         self.aprox = data['aprox']
