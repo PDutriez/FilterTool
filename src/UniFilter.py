@@ -101,16 +101,17 @@ class FilterMaker(object):
             if my.fap == other.fap and my.fam == other.fam and my.Ap == other.Ap:
                 if my.Aa == other.Aa:
                     if my.Go == other.Go:
-                        if self.compare(my.fc,other.fc):
-                            if self.ft == doppelganger.ft:
-                                if self.aprox == doppelganger.aprox:
-                                    if self.ft == 'Group Delay':
-                                        if my.tol == doppelganger.Filtro.tol:
-                                            if my.retGroup == doppelganger.Filtro.retGroup:
-                                                if my.fo == doppelganger.Filtro.fo:
-                                                    return True
-                                    else:
-                                        return True
+                        if my.Q == other.Q:
+                            if self.compare(my.fc,other.fc):
+                                if self.ft == doppelganger.ft:
+                                    if self.aprox == doppelganger.aprox:
+                                        if self.ft == 'Group Delay':
+                                            if my.tol == doppelganger.Filtro.tol:
+                                                if my.retGroup == doppelganger.Filtro.retGroup:
+                                                    if my.fo == doppelganger.Filtro.fo:
+                                                        return True
+                                        else:
+                                            return True
         return False
 
     def compare(self,a,b):

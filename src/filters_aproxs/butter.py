@@ -98,7 +98,7 @@ class Butter(object):
         self.calc_NQE(N, fc,'LP')
 
         print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
-        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
+        self.b, self.a = butter(self.N, self.fc, btype='low', analog = True,output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         #self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)
