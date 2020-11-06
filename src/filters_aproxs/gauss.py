@@ -94,3 +94,59 @@ class Gauss(object):
         # w, h = signal.freqs(bn.c, 1, worN=np.logspace(-1, np.log10(wo) + 1, num=100000))
         # retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
         return bn,1
+
+    # -----------------------------------------------------------------------------
+    def gauss_tf(self, N, Wn, btype='low', output='ba'):
+        Wn = asarray(Wn)
+        # MODULO CUADRADO DE LA FUNCION TRANSFERENCIA
+        gain = 1
+        poly = poly1d(1)
+        for n in arange(1, N + 1):
+            base = zeros(n + 1)
+            base[0] = 1 / factorial(n)
+            new_poly = poly1d(base)
+            poly = polyadd(poly, new_poly)
+
+        den = polyval(poly, poly1d([1, 0, 0]))
+
+        poles = []
+        for pole in 1j * den.roots:
+            if pole.real < 0:
+                new_pole = complex(pole.real if abs(pole.real) > 1e-10 else 0,
+                                   pole.imag if abs(pole.imag) > 1e-10 else 0)
+                gain *= abs(new_pole)
+                poles.append(new_pole)
+        warped = Wn
+        z, p, k = ([], poles, gain)
+        # Transformo mi LP filter al resto
+        if btype in ('lowpass', 'highpass'):
+            if size(Wn) != 1:
+                raise ValueError('Must specify a single critical frequency Wn for lowpass or highpass filter')
+
+            if btype == 'lowpass':
+                z, p, k = signal.lp2lp_zpk(z, p, k, wo=warped)
+            elif btype == 'highpass':
+                z, p, k = signal.lp2hp_zpk(z, p, k, wo=warped)
+        elif btype in ('bandpass', 'bandstop'):
+            try:
+                bw = warped[1] - warped[0]
+                wo = sqrt(warped[0] * warped[1])
+            except IndexError:
+                raise ValueError('Wn must specify start and stop frequencies for bandpass or bandstop filter')
+
+            if btype == 'bandpass':
+                z, p, k = signal.lp2bp_zpk(z, p, k, wo=wo, bw=bw)
+            elif btype == 'bandstop':
+                z, p, k = signal.lp2bs_zpk(z, p, k, wo=wo, bw=bw)
+        else:
+            raise NotImplementedError("'%s' not implemented in iirfilter." % btype)
+
+        # print("input",[], poles, gain)
+        # print(btype,z, p ,k)
+
+        if output == 'zpk':
+            return z, p, k
+        elif output == 'ba':
+            return signal.zpk2tf(z, p, k)
+        elif output == 'sos':
+            return signal.zpk2sos(z, p, k)
