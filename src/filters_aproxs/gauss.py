@@ -8,15 +8,11 @@ Devuelve:
     -
 """
 
-#import scipy.signal as ss
-from scipy.signal import buttord, bessel
-from scipy import signal
-from src.lib.handy import save_filter, num2unit
-from numpy import pi
 import numpy as np
-import math
-import time
-
+from numpy import pi
+# import scipy.signal as ss
+from scipy import signal
+from math import factorial
 
 class Gauss(object):
 
@@ -52,7 +48,7 @@ class Gauss(object):
         elif self.N > 24:  # de nuevo el n q invente
             self.N = 24
 
-        self.b, self.a = self.gauss_tf(self.N,self.fc)
+        self.b, self.a = self.gauss_tf(self.N,self.fc*2*pi)
         self.b = 10 ** (self.Go / 20) * self.b
 
         print(self.b, self.a)
@@ -63,7 +59,7 @@ class Gauss(object):
         it=0
         for it in range(1,N+1):
             bn,an = self.gauss_tf(it,woN)
-            w, h = signal.freqs(bn, an, worN=np.logspace(-1, np.log10(woN) + 1, num=2000))
+            w, h = signal.freqs(bn, an, worN=np.logspace(-1, np.log10(woN) + 3, num=2000))
             retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)  # el retardo de grupo es la derivada de la fase respecto de w
             minPos = self.minPos(w, woN)
             if retGroup_f[minPos] >= (1 - tolN):
@@ -71,14 +67,7 @@ class Gauss(object):
         return it, 1 / (retGroup * 1e-6)
 
 
-    def nextTerm(self,tol,k):
-        #newTerm= [(self.tol**(k+1)/math.factorial(k+1))]
-        newTerm = np.zeros(2*(k+1))
-        newTerm= [(tol**(k+1)/math.factorial(k+1))]  #Normalizado
 
-        for it in range(0,2*(1+k)):
-            newTerm.append(0)
-        return np.poly1d(newTerm)
 
     def minPos(self,w,woN):
         new_w = []
@@ -89,14 +78,14 @@ class Gauss(object):
 
 
     # -----------------------------------------------------------------------------
-    def gauss_tf(self, N, Wn, btype='low', output='ba'):
+    def gauss_tf(self, N, Wn, btype='lowpass', output='ba'):
         Wn = np.asarray(Wn)
         # MODULO CUADRADO DE LA FUNCION TRANSFERENCIA
         gain = 1
         poly = np.poly1d(1)
         for n in np.arange(1, N + 1):
             base = np.zeros(n + 1)
-            base[0] = 1 / np.factorial(n)
+            base[0] = 1 / factorial(n)
             new_poly = np.poly1d(base)
             poly = np.polyadd(poly, new_poly)
 

@@ -4,13 +4,13 @@ Q,auto
 E,auto
 aprox,Gauss
 ft,Group Delay
-Go,9.0
+Go,0.0
 fpp,1000.0
-fpm,60.0
+fpm,68.0
 fap,1400.0
 fam,50.0
 Ap,4.0
 Aa,19.0
-tol,24.2
-retGroup,56.0
-fo,99.99
+tol,2.0
+retGroup,10.0
+fo,1000.0
