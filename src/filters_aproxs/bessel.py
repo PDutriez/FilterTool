@@ -40,39 +40,41 @@ class Bessel(object):
     def GD(self, data):
         self.get_params(data)
 
-        N, self.fc = self._bessord(self.fo*(2*pi),self.tol,self.retGroup, 20) #fije un n_max
-        print(N)
+        N, fc = self.bessord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
         if self.N == 0:
             self.N = N
-        elif self.N > 20:#de nuevo el n_max q invente
+        elif self.N > 24:#de nuevo el n q invente
             self.N = 20
-        print(N)
 
-        self.b,self.a = signal.bessel(N, self.fc, 'low', True, 'ba', norm='delay')
+        self.b,self.a = signal.bessel(self.N, fc, 'low', True, 'ba', norm='delay')
         self.b = 10**(self.Go/20)*self.b
 
         print(self.b, self.a)
 
 
 
+    def bessord(self, fo,tol,retGroup,N):
+        #normalizamos
+        woN = fo*retGroup*1e-6
 
-
-    def _bessord(self, wrg, tol, tau_0, max_order):
-        wrgn = wrg*tau_0*1e-6
-        n = 0
-        while True:  # do{}while() statement python style
-            n = n+1
-            z_n, p_n, k_n = signal.bessel(n, 1, 'low', analog=True, output='zpk', norm='delay')
-            w, h = signal.freqs_zpk(z_n, p_n, k_n, worN=np.logspace(-1, np.log10(wrgn)+1, num=2000))
+        n=0
+        for i in range(0,N):
+            n+=1
+            bn,an = signal.bessel(n,1,'low',analog=True,output='ba',norm='delay')
+            w,h = signal.freqs(bn,an,worN=np.logspace(-1, np.log10(woN)+1, num=1000))
             g_delay = -np.diff(np.unwrap(np.angle(h)))/np.diff(w)
-            w_prima = [abs(j-wrgn) for j in w]
-            i = w_prima.index(min(w_prima))  # Busco el wrgn (en su defecto el mas cercano)
-            if i<len(g_delay):
-                if g_delay[i] >= (1-tol/100) or n is max_order:
-                    break
-            else:
+            minPos = self.minPos(w,woN)
+            if g_delay[minPos] >= (1-tol/100):
                 break
-        return n, 1/(tau_0*1e-6)
+        return n, 1/(retGroup*1e-6)
+
+    def minPos(self,w,woN):
+        new_w = []
+        for it in w:
+            new_w.append(abs(it-woN))
+        return new_w.index(min(new_w))
+
+
 
 
 
