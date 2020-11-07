@@ -10,59 +10,106 @@ Devuelve:
 #import scipy.signal as ss
 from scipy.signal import ellipord, ellip
 from src.lib.handy import save_filter, num2unit
+import numpy as np
+from numpy import pi
+
 class Cauer(object):
 
     def __init__(self):
         super(Cauer, self).__init__()
-
+        self.b, self.a = None, None
+        self.sos = None
+        self.zpk = None
     #-------------------------------------------------
-    def get_params(self,data):
-        self.N   = data['N']
+    def get_params(self, data):
+        print(data)
+        self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
         self.fap = data['fap']
         self.fam = data['fam']
-        self.Ap  = data['Ap']
+        self.Ap = data['Ap']
         self.Aa = data['Aa']
-        self.fc = None
-        self.format  = 'sos'
+        self.Go = data['Go']
+        self.E = data['E']
+        self.Q = data['Q']
     #-------------------------------------------------
-    def save(self, data, new):
-        save_filter(data, new)
+    def calc_NQE(self, N, fc,ft):
+        if self.N == 0:
+            self.N = N
+        if self.E == 'auto':
+            if self.Q == 'auto':
+                self.fc = fc
+            else:
+                self.E = (max(1/(2*self.Q),self.calc_Emin(ft)) + self.calc_Emax())/2
+                self.fc = self.fpp / (self.E ** (self.N))
+        else:
+            if self.Q == 'auto':
+                Emin = self.calc_Emin(ft)
+            else:
+                Emin = max(1/(2*self.Q),self.calc_Emin(ft))
+            self.E = self.calc_Emax() - self.E*(self.calc_Emax()-Emin)/100
+            self.fc = self.fpp / (self.E ** (self.N))
+
+
+    def calc_Emin(self,ft):
+        frec_norm = {
+            'LP': self.fap/self.fpp,
+            'HP': self.fpp/self.fap,
+            'BP': (self.fap-self.fam)/(self.fpp-self.fpm),
+            'BR': (self.fpp-self.fpm)/(self.fap-self.fam)
+        }
+        return np.sqrt(10**(self.Aa/10)-1)/(frec_norm[ft]**self.N)
+
+    def calc_Emax(self):
+        return np.sqrt(10**(self.Ap/10)-1)
     #-------------------------------------------------
     def LP(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, self.fc = ellipord(self.fpp,self.fap,
-                                          self.Ap,self.Aa)
-        self.save(data,ellip(self.N,self.Ap,self.fc,
-                                 btype='lowpass',output=self.format))
+        self.N, self.fc = ellipord(self.fpp*2*pi,self.fap*2*pi,
+                                          self.Ap,self.Aa,analog=True)
+        self.calc_NQE(self.N, self.fc, 'LP')
+        print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
+        self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='low', analog=True, output='ba')
+        self.b = 10 ** (self.Go / 20) * self.b
+        print(self.b,self.a)
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     #-------------------------------------------------
     def HP(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, self.fc = ellipord(self.fpp, self.fap,
-                                        self.Ap, self.Aa)
-        self.save(data,ellip(self.N, self.Ap, self.fc,
-                              btype='highpass', output=self.format))
+        self.N, self.fc = ellipord(self.fpp*2*pi, self.fap*2*pi,
+                                   self.Ap, self.Aa, analog=True)
+        self.calc_NQE(self.N, self.fc, 'HP')
+        print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
+        self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
+        self.b = 10 ** (self.Go / 20) * self.b
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     #-------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, self.fc = ellipord([self.fpp,self.fpm],
-                                       [self.fap,self.fam],
-                                          self.Ap, self.Aa)
-        self.save(data,ellip(self.N,self.Ap,self.fc,btype='bandpass',
-                              output=self.format))
+        N, fc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+                        [self.fam * (2 * pi), self.fap * (2 * pi)],
+                        self.Ap, self.Aa, analog=True)
+        self.calc_NQE(N, fc, 'BP')
+
+        self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass', analog=True)
+        self.b = 10 ** (self.Go / 20) * self.b
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
     #-------------------------------------------------
     def BR(self,data):
         self.get_params(data)
-        if self.N == 0:
-            self.N, self.fc = ellipord([self.fpp, self.fpm],
-                                       [self.fap, self.fam],
-                                       self.Ap, self.Aa)
-        self.save(data, ellip(self.N, self.Ap, self.fc, btype='bandstop',
-                                output=self.format))
+        N, fc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+                        [self.fam * (2 * pi), self.fap * (2 * pi)],
+                        self.Ap, self.Aa, analog=True)
+        self.calc_NQE(N, fc, 'BR')
+
+        self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop', analog=True)
+        self.b = 10 ** (self.Go / 20) * self.b
+        # self.z, self.p, self.k = sos2zpk(self.sos)
+        print(self.b, self.a)
 #------------------------------------------------------
 if __name__ == '__main__':
     pass

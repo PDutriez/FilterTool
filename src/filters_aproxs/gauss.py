@@ -1,26 +1,26 @@
 """
 ------------ APROXIMACIÓN DE GAUSS ------------
-Te hace de todito (LP,HP,BP,BR) con las condiciones
-de diseño clásicas (fp,fa,Ap,Aa) prorizando el orden
+Te hace de todito con las condiciones
+de diseño clásicas prorizando el orden
 preestablecido.
 Devuelve:
     -
     -
 """
-#import scipy.signal as ss
-from scipy.signal import buttord, bessel
-from scipy import signal
-from src.lib.handy import save_filter, num2unit
+
+import numpy as np
 from numpy import pi
-from numpy import *
+# import scipy.signal as ss
+from scipy import signal
 from math import factorial
+
 class Gauss(object):
 
     def __init__(self):
         super(Gauss, self).__init__()
         self.b, self.a = None, None
 
-    #-------------------------------------------------
+    # -------------------------------------------------
     def get_params(self, data):
         print(data)
         self.N = data['N']
@@ -37,51 +37,59 @@ class Gauss(object):
         self.retGroup = data['retGroup']
         self.fo = data['fo']
 
+
     def GD(self, data):
         self.get_params(data)
 
-        N, self.fc = self._bessord(self.fo*(2*pi),self.tol,self.retGroup, 20) #fije un n_max
-        print(N)
+        N,self.fc = self.Gaussord(self.fo*(2*pi),self.tol,self.retGroup, 24) #fije un N maximo para q no explote
+
         if self.N == 0:
             self.N = N
-        elif self.N > 20:#de nuevo el n_max q invente
-            self.N = 20
-        print(N)
+        elif self.N > 24:  # de nuevo el n q invente
+            self.N = 24
 
-        self.b,self.a = signal.bessel(N, self.fc, 'low', True, 'ba', norm='delay')
-        self.b = 10**(self.Go/20)*self.b
+        self.b, self.a = self.gauss_tf(self.N,self.fc*2*pi)
+        self.b = 10 ** (self.Go / 20) * self.b
 
         print(self.b, self.a)
-    #-----------------------------------------------------------------------------
-    def _gaussord(self, wrg, tol, tau_0, max_order):
-        wrgn = wrg*tau_0*1e-6
-        n = 0
-        while True:  # do{}while() statement python style
-            n = n+1
-            z_n, p_n, k_n = signal.bessel(n, 1, 'low', analog=True, output='zpk', norm='delay')
-            w, h = signal.freqs_zpk(z_n, p_n, k_n, worN=np.logspace(-1, np.log10(wrgn)+1, num=2000))
-            g_delay = -np.diff(np.unwrap(np.angle(h)))/np.diff(w)
-            w_prima = [abs(j-wrgn) for j in w]
-            i = w_prima.index(min(w_prima))  # Busco el wrgn (en su defecto el mas cercano)
-            if i<len(g_delay):
-                if g_delay[i] >= (1-tol/100) or n is max_order:
-                    break
-            else:
-                break
-        return n, 1/(tau_0*1e-6)
-    #-----------------------------------------------------------------------------
-    def gauss_tf(self,N,Wn, btype='low',output='ba'):
-        Wn = asarray(Wn)
-        #MODULO CUADRADO DE LA FUNCION TRANSFERENCIA
-        gain = 1
-        poly = poly1d(1)
-        for n in arange(1, N + 1):
-            base = zeros(n + 1)
-            base[0] = 1 / factorial(n)
-            new_poly = poly1d(base)
-            poly = polyadd(poly, new_poly)
 
-        den = polyval(poly, poly1d([1, 0, 0]))
+    def Gaussord(self,wo,tol,retGroup,N):
+        woN = wo * retGroup * 1e-6
+        tolN = tol / 100
+        it=0
+        for it in range(1,N+1):
+            bn,an = self.gauss_tf(it,woN)
+            w, h = signal.freqs(bn, an, worN=np.logspace(-1, np.log10(woN) + 3, num=2000))
+            retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)  # el retardo de grupo es la derivada de la fase respecto de w
+            minPos = self.minPos(w, woN)
+            if retGroup_f[minPos] >= (1 - tolN):
+                  break
+        return it, 1 / (retGroup * 1e-6)
+
+
+
+
+    def minPos(self,w,woN):
+        new_w = []
+        for it in w:
+            new_w.append(abs(it-woN))#busco el valor q mas se parezca a woN
+        return new_w.index(min(new_w))#devuelvo la posicion del elemento q cumpla esa condicion
+
+
+
+    # -----------------------------------------------------------------------------
+    def gauss_tf(self, N, Wn, btype='lowpass', output='ba'):
+        Wn = np.asarray(Wn)
+        # MODULO CUADRADO DE LA FUNCION TRANSFERENCIA
+        gain = 1
+        poly = np.poly1d(1)
+        for n in np.arange(1, N + 1):
+            base = np.zeros(n + 1)
+            base[0] = 1 / factorial(n)
+            new_poly = np.poly1d(base)
+            poly = np.polyadd(poly, new_poly)
+
+        den = np.polyval(poly, np.poly1d([1, 0, 0]))
 
         poles = []
         for pole in 1j * den.roots:
@@ -94,7 +102,7 @@ class Gauss(object):
         z, p, k = ([], poles, gain)
         # Transformo mi LP filter al resto
         if btype in ('lowpass', 'highpass'):
-            if size(Wn) != 1:
+            if np.size(Wn) != 1:
                 raise ValueError('Must specify a single critical frequency Wn for lowpass or highpass filter')
 
             if btype == 'lowpass':
@@ -104,7 +112,7 @@ class Gauss(object):
         elif btype in ('bandpass', 'bandstop'):
             try:
                 bw = warped[1] - warped[0]
-                wo = sqrt(warped[0] * warped[1])
+                wo = np.sqrt(warped[0] * warped[1])
             except IndexError:
                 raise ValueError('Wn must specify start and stop frequencies for bandpass or bandstop filter')
 
@@ -124,6 +132,3 @@ class Gauss(object):
             return signal.zpk2tf(z, p, k)
         elif output == 'sos':
             return signal.zpk2sos(z, p, k)
-
-
-

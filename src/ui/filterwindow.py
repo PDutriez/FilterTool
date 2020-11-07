@@ -208,6 +208,7 @@ class Ui_MainWindow(object):
         self.GridSpecs.addWidget(self.label_ft, 6, 0, 1, 1)
         self.SpinBoxFt = QtWidgets.QDoubleSpinBox(MainWindow)
         self.SpinBoxFt.setObjectName("SpinBoxFt")
+        self.SpinBoxFt.setMaximum(9999.99)
         self.GridSpecs.addWidget(self.SpinBoxFt, 6, 1, 1, 1)
         self.label_retgroup = QtWidgets.QLabel(MainWindow)
         self.label_retgroup.setObjectName("label_retgroup")
