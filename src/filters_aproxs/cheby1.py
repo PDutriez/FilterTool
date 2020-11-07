@@ -24,7 +24,7 @@ class Cheby1(object):
 
     #-------------------------------------------------
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -63,7 +63,6 @@ class Cheby1(object):
             'BR': (self.fpp - self.fpm) / (self.fap - self.fam)
         }
         return np.sqrt(10 ** (self.Aa / 10) - 1) / np.cosh(self.N*np.arcosh(frec_norm[ft]*2*pi))
-
     # -------------------------------------------------
     def calc_Emax(self):
         return np.sqrt(10 ** (self.Ap / 10) - 1)
@@ -75,11 +74,11 @@ class Cheby1(object):
                                           self.Ap,self.Aa,analog=True)
         self.calc_NQE(N,wc,'LP')
 
-        print("fc:" + str(self.fc) + ",N:" + str(self.N))
+        #print("fc:" + str(self.fc) + ",N:" + str(self.N))
         self.b, self.a = cheby1(self.N,self.Ap , self.fc * (2 * pi), btype='low', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def HP(self, data):
         self.get_params(data)
@@ -87,15 +86,15 @@ class Cheby1(object):
                          self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, wc, 'HP')
 
-        print("fc:" + str(self.fc) + ",N:" + str(self.N))
+        #print("fc:" + str(self.fc) + ",N:" + str(self.N))
         self.b, self.a = cheby1(self.N, self.Ap, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        print(self.fpm,self.fpp,self.fam,self.fap,self.Ap,self.Aa)
+        #print(self.fpm,self.fpp,self.fam,self.fap,self.Ap,self.Aa)
         N, wc = cheb1ord([self.fpm*(2*pi),self.fpp*(2*pi)],
                                       [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa,analog=True)
@@ -104,7 +103,7 @@ class Cheby1(object):
         self.b, self.a = cheby1(self.N,self.Ap, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -116,7 +115,7 @@ class Cheby1(object):
         self.b, self.a = cheby1(self.N,self.Ap, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
 #------------------------------------------------------
 if __name__ == '__main__':
     pass

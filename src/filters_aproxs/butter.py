@@ -21,7 +21,7 @@ class Butter(object):
         self.zpk = None
     #-------------------------------------------------
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N   = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -65,7 +65,6 @@ class Butter(object):
         return np.sqrt(10**(self.Ap/10)-1)
     #-------------------------------------------------
     def save(self, new):
-        print(new)
         self.sos = new
         self.z, self.p, self.k = sos2zpk(new)
     # ------------------------------------------------
@@ -76,11 +75,11 @@ class Butter(object):
                                  self.Ap,self.Aa, analog = True)
         self.calc_NQE(N, wc,'LP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
+        #print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         #self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # ------------------------------------------------
     def HP(self,data):
         self.get_params(data)
@@ -88,11 +87,11 @@ class Butter(object):
                                  self.Ap, self.Aa,analog = True)
         self.calc_NQE(N, wc,'HP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
+        #print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='highpass', analog=True, output='ba')
         self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
@@ -104,7 +103,7 @@ class Butter(object):
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -116,14 +115,14 @@ class Butter(object):
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
 # ----------------------------------------------------
 if __name__ == '__main__':
     prueba = Butter()
     data = {'N': 1, 'fpp': 1000, 'fpm': 0, 'fam': 0, 'fap': 2000, 'Ap': 3,
             'Aa': 18, 'E': 0, 'Go': 5, 'Q': 'auto'}
     prueba.LP(data)
-    print(prueba.b, prueba.a)
-    print(prueba.zpk)
+    # print(prueba.b, prueba.a)
+    # print(prueba.zpk)
     pass
     #Calculo que debería hacer algo...

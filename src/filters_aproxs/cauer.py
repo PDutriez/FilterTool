@@ -22,7 +22,7 @@ class Cauer(object):
         self.zpk = None
     #-------------------------------------------------
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -69,23 +69,23 @@ class Cauer(object):
         self.N, wc = ellipord(self.fpp*2*pi,self.fap*2*pi,
                                           self.Ap,self.Aa,analog=True)
         self.calc_NQE(self.N, wc, 'LP')
-        print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
+        #print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='low', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
-        print(self.b,self.a)
+        #print(self.b,self.a)
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def HP(self,data):
         self.get_params(data)
         self.N, wc = ellipord(self.fpp*2*pi, self.fap*2*pi,
                                    self.Ap, self.Aa, analog=True)
         self.calc_NQE(self.N, wc, 'HP')
-        print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
+        #print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def BP(self,data):
         self.get_params(data)
@@ -97,7 +97,7 @@ class Cauer(object):
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     #-------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -109,7 +109,7 @@ class Cauer(object):
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
 #------------------------------------------------------
 if __name__ == '__main__':
     pass
