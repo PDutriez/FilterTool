@@ -16,6 +16,7 @@ class AppCLass(QtWidgets.QWidget):
 
     def __init__(self, parent=None):  # instanciamos la clase
         super(AppCLass, self).__init__(parent)
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.GraphsWidget.setCurrentIndex(0)

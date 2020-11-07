@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
-    <height>60</height>
+    <width>535</width>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,7 +54,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/plotControl.qrc">
+         <iconset>
           <normaloff>:/Button Icons/assets/color.png</normaloff>:/Button Icons/assets/color.png</iconset>
         </property>
        </widget>
@@ -65,7 +65,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/plotControl.qrc">
+         <iconset>
           <normaloff>:/Button Icons/assets/trashCan.png</normaloff>:/Button Icons/assets/trashCan.png</iconset>
         </property>
        </widget>
@@ -76,7 +76,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources/plotControl.qrc"/>
+  <include location="../../TC/TP1/PlotTool/resources/plotControl.qrc"/>
  </resources>
  <connections/>
 </ui>

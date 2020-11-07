@@ -293,7 +293,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.GraphZone)
 
         self.retranslateUi(MainWindow)
-        self.GraphsWidget.setCurrentIndex(0)
+        self.GraphsWidget.setCurrentIndex(6)
         self.CheckMinOrden.clicked['bool'].connect(self.NumOrden.clear)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
