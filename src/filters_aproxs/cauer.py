@@ -34,12 +34,12 @@ class Cauer(object):
         self.E = data['E']
         self.Q = data['Q']
     #-------------------------------------------------
-    def calc_NQE(self, N, fc,ft):
+    def calc_NQE(self, N, wc,ft):
         if self.N == 0:
             self.N = N
         if self.E == 'auto':
             if self.Q == 'auto':
-                self.fc = fc
+                self.fc = wc/(2*np.pi)
             else:
                 self.E = (max(1/(2*self.Q),self.calc_Emin(ft)) + self.calc_Emax())/2
                 self.fc = self.fpp / (self.E ** (self.N))
@@ -51,7 +51,7 @@ class Cauer(object):
             self.E = self.calc_Emax() - self.E*(self.calc_Emax()-Emin)/100
             self.fc = self.fpp / (self.E ** (self.N))
 
-
+    # -------------------------------------------------
     def calc_Emin(self,ft):
         frec_norm = {
             'LP': self.fap/self.fpp,
@@ -66,9 +66,9 @@ class Cauer(object):
     #-------------------------------------------------
     def LP(self,data):
         self.get_params(data)
-        self.N, self.fc = ellipord(self.fpp*2*pi,self.fap*2*pi,
+        self.N, wc = ellipord(self.fpp*2*pi,self.fap*2*pi,
                                           self.Ap,self.Aa,analog=True)
-        self.calc_NQE(self.N, self.fc, 'LP')
+        self.calc_NQE(self.N, wc, 'LP')
         print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='low', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
@@ -78,9 +78,9 @@ class Cauer(object):
     #-------------------------------------------------
     def HP(self,data):
         self.get_params(data)
-        self.N, self.fc = ellipord(self.fpp*2*pi, self.fap*2*pi,
+        self.N, wc = ellipord(self.fpp*2*pi, self.fap*2*pi,
                                    self.Ap, self.Aa, analog=True)
-        self.calc_NQE(self.N, self.fc, 'HP')
+        self.calc_NQE(self.N, wc, 'HP')
         print("fc:" + str(self.fc) + ",N:" + str(self.N) + ",E:" + str(self.E))
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
@@ -89,10 +89,10 @@ class Cauer(object):
     #-------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        N, fc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                         [self.fam * (2 * pi), self.fap * (2 * pi)],
                         self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'BP')
+        self.calc_NQE(N, wc, 'BP')
 
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
@@ -101,10 +101,10 @@ class Cauer(object):
     #-------------------------------------------------
     def BR(self,data):
         self.get_params(data)
-        N, fc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc = ellipord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                         [self.fam * (2 * pi), self.fap * (2 * pi)],
                         self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'BR')
+        self.calc_NQE(N, wc, 'BR')
 
         self.b, self.a = ellip(self.N,self.Ap,self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b

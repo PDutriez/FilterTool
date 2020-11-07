@@ -37,12 +37,12 @@ class Cheby2(object):
 
     # -------------------------------------------------
 
-    def calc_NQE(self, N, fc, ft):
+    def calc_NQE(self, N, wc, ft):
         if self.N == 0:
             self.N = N
         if self.E == 'auto':
             if self.Q == 'auto':
-                self.fc = fc
+                self.fc = wc/(2*np.pi)
             else:
                 self.E = (max(1 / (2 * self.Q), self.calc_Emin(ft)) + self.calc_Emax()) / 2
                 self.fc = self.fpp / (self.E ** (self.N))
@@ -71,9 +71,9 @@ class Cheby2(object):
 
     def LP(self, data):
         self.get_params(data)
-        N, fc = cheb2ord(self.fpp * (2 * pi), self.fap * (2 * pi),
+        N, wc = cheb2ord(self.fpp * (2 * pi), self.fap * (2 * pi),
                          self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'LP')
+        self.calc_NQE(N, wc, 'LP')
 
         print("fc:" + str(self.fc) + ",N:" + str(self.N))
         self.b, self.a = cheby2(self.N, self.Aa, self.fc * (2 * pi), btype='low', analog=True, output='ba')
@@ -84,9 +84,9 @@ class Cheby2(object):
 
     def HP(self, data):
         self.get_params(data)
-        N, fc = cheb2ord(self.fpp * (2 * pi), self.fap * (2 * pi),
+        N, wc = cheb2ord(self.fpp * (2 * pi), self.fap * (2 * pi),
                          self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'HP')
+        self.calc_NQE(N, wc, 'HP')
 
         print("fc:" + str(self.fc) + ",N:" + str(self.N))
         self.b, self.a = cheby2(self.N, self.Ap, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
@@ -98,10 +98,10 @@ class Cheby2(object):
     def BP(self, data):
         self.get_params(data)
         print(self.fpm, self.fpp, self.fam, self.fap, self.Ap, self.Aa)
-        N, fc = cheb2ord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc = cheb2ord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                          [self.fam * (2 * pi), self.fap * (2 * pi)],
                          self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'BP')
+        self.calc_NQE(N, wc, 'BP')
 
         self.b, self.a = cheby2(self.N, self.Ap, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass',
                                 analog=True)
@@ -112,10 +112,10 @@ class Cheby2(object):
 
     def BR(self, data):
         self.get_params(data)
-        N, fc = cheb2ord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc = cheb2ord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                          [self.fam * (2 * pi), self.fap * (2 * pi)],
                          self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, 'BR')
+        self.calc_NQE(N, wc, 'BR')
 
         self.b, self.a = cheby2(self.N, self.Ap, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop',
                                 analog=True)

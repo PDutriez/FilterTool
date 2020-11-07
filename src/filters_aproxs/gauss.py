@@ -37,7 +37,7 @@ class Gauss(object):
         self.retGroup = data['retGroup']
         self.fo = data['fo']
 
-
+    # -------------------------------------------------
     def GD(self, data):
         self.get_params(data)
 
@@ -53,6 +53,7 @@ class Gauss(object):
 
         print(self.b, self.a)
 
+    # -------------------------------------------------
     def Gaussord(self,wo,tol,retGroup,N):
         woN = wo * retGroup * 1e-6
         tolN = tol / 100
@@ -66,18 +67,14 @@ class Gauss(object):
                   break
         return it, 1 / (retGroup * 1e-6)
 
-
-
-
+    # -------------------------------------------------
     def minPos(self,w,woN):
         new_w = []
         for it in w:
             new_w.append(abs(it-woN))#busco el valor q mas se parezca a woN
         return new_w.index(min(new_w))#devuelvo la posicion del elemento q cumpla esa condicion
 
-
-
-    # -----------------------------------------------------------------------------
+    # -------------------------------------------------
     def gauss_tf(self, N, Wn, btype='lowpass', output='ba'):
         Wn = np.asarray(Wn)
         # MODULO CUADRADO DE LA FUNCION TRANSFERENCIA

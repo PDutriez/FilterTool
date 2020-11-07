@@ -26,7 +26,7 @@ class FilterMaker(object):
         self.msg = ""
         self.chk = True
         self.name = None
-        self.color = ''
+        self.plotColor = None
         # self.color = None
 
     def make_filter(self, data, index):
@@ -121,53 +121,10 @@ class FilterMaker(object):
     def __str__(self):
         return self.name
 
-"""    def handlePlot(self,axes,canvas, plot):
-        if plot == 'mag':
-            self.magPlot(axes, canvas)
-        elif plot == 'ate':
-            self.atePlot(axes, canvas)
-        elif plot == 'paz':
-            self.pazPlot(axes,canvas)
-        elif plot == 'fas':
-            self.fasPlot(axes, canvas)
-        elif plot == 'rdg':
-            self.rdgPlot(axes, canvas)
-        elif plot == 'imp':
-            self.impPlot(axes, canvas)
-        elif plot == 'esc':
-            self.escPlot(axes, canvas)
+    def setPlotColor(self, color):
+        self.plotColor = color
 
-    def atePlot(self, axes, canvas):
 
-    def pazPlot(self, axes, canvas):
-
-    def fasPlot(self, axes, canvas):
-
-    def rdgPlot(self, axes, canvas):
-
-    def impPlot(self, axes, canvas):
-
-    def escPlot(self, axes, canvas):
-
-    def magPlot(self, axes, canvas):#Este seria el caso de LP
-        if self.ft == 'LP':
-            self.w = np.logspace(np.log10(self.Filtro.fpp / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
-        elif self.ft == 'HP':
-            self.w = np.logspace(np.log10(self.Filtro.fap / 10), np.log10(self.Filtro.fpp * 10), num=10000) * 2 * np.pi
-        elif self.ft == 'BP':
-            self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
-        elif self.ft == 'BR':
-            self.w = np.logspace(np.log10(self.Filtro.fam / 10), np.log10(self.Filtro.fap * 10), num=10000) * 2 * np.pi
-
-        #self.w = np.logspace(0,6,1000)
-        bode = ss.bode(ss.TransferFunction(self.Filtro.b, self.Filtro.a), w=self.w)
-        axes.plot(bode[0] / (2 * np.pi), bode[1])
-        axes.set_xscale('log')
-        axes.set_xlabel('Frequency [Hz]');
-        axes.set_ylabel('Magnitude [dB]')
-        axes.minorticks_on()
-
-        canvas.draw()"""
 # -----------------------------------------------------
 if __name__ == '__main__':
     pass

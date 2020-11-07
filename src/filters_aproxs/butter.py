@@ -33,12 +33,12 @@ class Butter(object):
         self.E = data['E']
         self.Q = data['Q']
     # -------------------------------------------------
-    def calc_NQE(self, N, fc,ft):
+    def calc_NQE(self, N, wc,ft):
         if self.N == 0:
             self.N = N
         if self.E == 'auto':
             if self.Q == 'auto':
-                self.fc = fc/(2*pi)
+                self.fc = wc/(2*pi)
             else:
                 self.E = (max(1/(2*self.Q),self.calc_Emin(ft)) + self.calc_Emax())/2
                 self.fc = self.fpp / (self.E ** (self.N))
@@ -50,7 +50,7 @@ class Butter(object):
             self.E = self.calc_Emax() - self.E*(self.calc_Emax()-Emin)/100
             self.fc = self.fpp / (self.E ** (self.N))
 
-
+    # -------------------------------------------------
     def calc_Emin(self,ft):
         frec_norm = {
             'LP': self.fap/self.fpp,
@@ -60,30 +60,9 @@ class Butter(object):
         }
         return np.sqrt(10**(self.Aa/10)-1)/(frec_norm[ft]**self.N)
 
+    # -------------------------------------------------
     def calc_Emax(self):
         return np.sqrt(10**(self.Ap/10)-1)
-
-
-    #     if data['E'] == 0:
-    #         data['E'] = 0.01 #Reemplazar por el val MIN
-    #     if data['E'] != 'auto': #buttord debe calcular fc
-    #         return 1/(data['E']**(self.N))
-    #     elif data['N'] != 0: #setearon el orden con E auto
-    #         return (10**(self.Ap/10)-1)**0.5 #implementar desnorm
-    #     else:
-    #         return None
-    #
-    #         if self.N == 0: #Nmin
-    #     self.N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
-    #                          self.Ap,self.Aa, analog = True)
-    #     if self.Q == 'auto' and self.E == 'auto': self.fc = fc/(2*pi)
-    #     else:  self.fc = self.calc_crit()
-    # else:
-    #     N, fc = buttord(self.fpp * (2 * pi), self.fap * (2 * pi),
-    #                          self.Ap, self.Aa, analog=True)
-    #     if self.Q == 'auto' and self.E == 'auto': self.fc = fc/(2*pi)
-    #     else:  self.fc = self.calc_crit()
-
     #-------------------------------------------------
     def save(self, new):
         print(new)
@@ -105,9 +84,9 @@ class Butter(object):
     # ------------------------------------------------
     def HP(self,data):
         self.get_params(data)
-        N, fc = buttord(self.fpp*(2*pi), self.fap*(2*pi),
+        N, wc = buttord(self.fpp*(2*pi), self.fap*(2*pi),
                                  self.Ap, self.Aa,analog = True)
-        self.calc_NQE(N, fc,'HP')
+        self.calc_NQE(N, wc,'HP')
 
         print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = butter(self.N, self.fc*(2*pi), btype='highpass', analog=True, output='ba')
@@ -117,10 +96,10 @@ class Butter(object):
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        N, fc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
+        N, wc = buttord([self.fpm*(2*pi),self.fpp*(2*pi)],
                                       [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa,analog=True)
-        self.calc_NQE(N, fc,'BP')
+        self.calc_NQE(N, wc,'BP')
 
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
@@ -129,10 +108,10 @@ class Butter(object):
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
-        N, fc = buttord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc = buttord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                         [self.fam * (2 * pi), self.fap * (2 * pi)],
                         self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc,'BR')
+        self.calc_NQE(N, wc,'BR')
 
         self.b, self.a = butter(self.N, [self.fam*(2*pi),self.fpp*(2*pi)], btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b

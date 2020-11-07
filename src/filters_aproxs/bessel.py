@@ -36,7 +36,7 @@ class Bessel(object):
         self.tol = data['tol']
         self.retGroup = data['retGroup']
         self.fo = data['fo']
-
+    # -------------------------------------------------
     def GD(self, data):
         self.get_params(data)
 
@@ -46,13 +46,11 @@ class Bessel(object):
         elif self.N > 24:#de nuevo el n q invente
             self.N = 24
 
-        self.b,self.a = signal.bessel(self.N, self.fc, 'low', True, 'ba', norm='delay')
+        self.b,self.a = signal.bessel(self.N, self.fc*2*np.pi, 'low', True, 'ba', norm='delay')
         self.b = 10**(self.Go/20)*self.b
 
         print(self.b, self.a)
-
-
-
+    # -------------------------------------------------
     def bessord(self, wo,tol,retGroup,N):
         #normalizamos
         woN = wo*retGroup*1e-6
@@ -68,15 +66,12 @@ class Bessel(object):
                 break
         return n, 1/(retGroup*1e-6)
 
+    # -------------------------------------------------
     def minPos(self,w,woN):
         new_w = []
         for it in w:
             new_w.append(abs(it-woN))#busco el valor q mas se parezca a woN
         return new_w.index(min(new_w))#devuelvo la posicion del elemento q cumpla esa condicion
-
-
-
-
 
 #------------------------------------------------------
 if __name__ == '__main__':
