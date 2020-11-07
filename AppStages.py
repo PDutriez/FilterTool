@@ -51,21 +51,30 @@ class AppStages(QtWidgets.QWidget):
                 for i in range(0,len(self.stages_list)):
                     if self.stages_list[i]:
                         temp_list = []
-                        temp_list.append(self.sos[i])
+                        temp_list.append(self.fix(self.sos[i]))
                         b, a = ss.sos2tf(temp_list)
                         b = np.poly1d(b)
                         a = np.poly1d(a)
                         B = np.polymul(B,b)
                         A = np.polymul(A,a)
-                self.sos[len(self.sos)-1] = ss.tf2sos(B.c, A.c)
-                for t in range(0,len(self.stages_list)):
-                    self.stages_list[t] = False
-                self.stages_list[len(self.stages_list)-1] = True
+                        print(B.c)
+                        print(A.c)
+                        print(ss.tf2sos(B.c, A.c))
+                # self.sos=np.insert(self.sos[0],0,ss.tf2sos(B.c, A.c))
+                # for t in range(0,len(self.stages_list)):
+                #     self.stages_list[t] = False
+                # self.stages_list[len(self.stages_list)-1] = True
+                w = np.logspace(np.log10(1), np.log10(self.furthestPZ() * 100 / (2 * np.pi)), num=10000) * 2 * np.pi
+                bode = ss.bode(ss.TransferFunction(B.c, A.c), w=w)
+                self.axes_mag.plot(bode[0] / (2 * np.pi), bode[1], label='acumulada')
+                self.axes_mag.set_xscale('log')
+                self.axes_mag.set_xlabel('Frequency [Hz]');
+                self.axes_mag.set_ylabel('Magnitude [dB]')
+                self.axes_mag.minorticks_on()
+                self.axes_mag.legend(loc='best')
+                self.canvas_mag.draw()
+        else:
                 self.manage_plot()
-        else: #Borrame PLS
-            for t in range(0, len(self.stages_list-1)):
-                self.stages_list[t] = self.ui.FilterList.itemWidget(self.ui.FilterList.item(t)).checkBox_plot.isChecked()
-            self.stages_list[len(self.stages_list) - 1] = False
 
     def manage_plot(self):
         w = self.ui.GraphsWidget.currentWidget() #Wipe it
@@ -84,22 +93,29 @@ class AppStages(QtWidgets.QWidget):
             plotter(axes, canvas)
         else:    canvas.draw()
 
+    def fix(self,sos):
+        if sos[2]==0 and sos[1]==0:
+            sos = np.delete(sos,2)
+            sos = np.insert(sos,0,0)
+            sos = np.delete(sos, 2)
+            sos = np.insert(sos, 0, 0)
+        elif sos[2]==0:
+            sos = np.delete(sos, 2)
+            sos = np.insert(sos, 0, 0)
+        return sos
+
     def magplot(self, axes, canvas):
         print(self.stages_list)
-        #w = np.logspace(np.log10(1), np.log10(self.furthestPZ() * 100/(2*np.pi)), num=10000) * 2 * np.pi
+        w = np.logspace(np.log10(1), np.log10(self.furthestPZ() * 100/(2*np.pi)), num=10000) * 2 * np.pi
         for i in range(0,len(self.stages_list)):
             if self.stages_list[i]:
                 temp_list = []
-                temp_list.append(self.sos[i])
-                print(temp_list)
-                print(self.sos)
-                # b, a = ss.sos2tf(temp_list)
-                # print(f'b:{b},a:{a}\n')
-                # bode = ss.bode(ss.TransferFunction(b, a), w=w)
-                w, h = ss.sosfreqz(self.sos,worN=np.logspace(-1, np.log10(self.furthestPZ()) + 3, num=2000))
-                print(h)
-                db = 20 * np.log10(np.maximum(np.abs(h), 1e-5))
-                axes.plot(w/np.pi, db)
+                temp_list.append(self.fix(self.sos[i]))
+                print(self.sos[i])
+                print(self.fix(self.sos[i]))
+                b, a = ss.sos2tf(temp_list)
+                bode = ss.bode(ss.TransferFunction(b, a), w=w)
+                axes.plot(bode[0] / (2 * np.pi), bode[1], label=str(i))
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')

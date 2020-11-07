@@ -20,7 +20,10 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.GraphsWidget.setCurrentIndex(0)
         self.hideAll()
 
-
+        self.ui.label.setVisible(False)
+        self.ui.CBFreqUnit.setVisible(False)
+        self.ui.label_2.setVisible(False)
+        self.ui.CBAmpUnit.setVisible(False)
 
 
         # MY STUFF: cosas que necesito instanciar externas a Qt
@@ -37,6 +40,8 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
         self.ui.FilterList.itemChanged.connect(self.selected_filter)
         self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
+        # self.ui.ButtSaveAprox.clicked.connect(self.SaveCurrentFilter)
+        # self.ui.ButtLoadAprox.clicked.connect(self.LoadFilter)
 
     def change_ParamInputs(self):
         # la idea es que no muestre todas las fpp... y App... dependiendo del filtro
