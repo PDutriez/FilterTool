@@ -38,7 +38,7 @@ class Butter(object):
             self.N = N
         if self.E == 'auto':
             if self.Q == 'auto':
-                self.fc = fc
+                self.fc = fc/(2*pi)
             else:
                 self.E = (max(1/(2*self.Q),self.calc_Emin(ft)) + self.calc_Emax())/2
                 self.fc = self.fpp / (self.E ** (self.N))
@@ -93,12 +93,12 @@ class Butter(object):
     def LP(self,data):
         self.get_params(data)
 
-        N, fc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
+        N, wc = buttord(self.fpp*(2*pi),self.fap*(2*pi),
                                  self.Ap,self.Aa, analog = True)
-        self.calc_NQE(N, fc,'LP')
+        self.calc_NQE(N, wc,'LP')
 
         print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
-        self.b, self.a = butter(self.N, self.fc, btype='low', analog = True,output='ba')
+        self.b, self.a = butter(self.N, self.fc*(2*pi), btype='low', analog = True,output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         #self.z, self.p, self.k = sos2zpk(self.sos)
         print(self.b, self.a)

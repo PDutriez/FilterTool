@@ -9,8 +9,6 @@ from src.lib import handy as hand
 from src.lib.PlotControl import plotControl
 import numpy as np
 import scipy.signal as ss
-import graficador as filterFactory
-
 
 class AppCLass(QtWidgets.QWidget):
 
@@ -27,7 +25,6 @@ class AppCLass(QtWidgets.QWidget):
 
         # MY STUFF: cosas que necesito instanciar externas a Qt
         self.createBodePlotsCanvas()
-        self.plotDict = {}
         self.filter_list = []
         if hand.read_data():
             self.recover(hand.read_data())
@@ -289,6 +286,7 @@ class AppCLass(QtWidgets.QWidget):
             axes.grid(which='both')
             plotter(axes, canvas)
         else:            canvas.draw()
+
     def magplot(self, axes, canvas):
         w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 100), num=10000) * 2 * np.pi
         for f in self.filter_list:
@@ -351,7 +349,7 @@ class AppCLass(QtWidgets.QWidget):
     def rdgPlot(self, axes, canvas):
         for f in self.filter_list:
             if f.chk:
-                w, gd = ss.group_delay((f.Filtro.a, f.Filtro.b))
+                w, gd = ss.group_delay((f.Filtro.b, f.Filtro.a))
                 axes.plot(w/(2 * np.pi), gd, label=f.name)
         axes.set_xscale('log')
         axes.set_ylabel('Group delay [samples]')

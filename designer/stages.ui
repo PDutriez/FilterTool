@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1121</width>
+    <height>743</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Filter Tool G4</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="show_zone">
+     <property name="leftMargin">
+      <number>1</number>
+     </property>
+     <item>
+      <widget class="QRadioButton" name="chk_all_selected">
+       <property name="text">
+        <string>Acumulada </string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="GraphZone">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QTabWidget" name="GraphsWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>780</width>
+         <height>390</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <property name="currentIndex">
+        <number>4</number>
+       </property>
+       <property name="tabBarAutoHide">
+        <bool>false</bool>
+       </property>
+       <widget class="QWidget" name="MagTab">
+        <attribute name="title">
+         <string>Magnitud</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="AtenTab">
+        <attribute name="title">
+         <string>Atenuación</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="FaseTab">
+        <attribute name="title">
+         <string>Fase</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RetGrupTab">
+        <attribute name="title">
+         <string>Ret. Grupo</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="PazTab">
+        <attribute name="title">
+         <string>P and Z</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RespImpTab">
+        <attribute name="title">
+         <string>Resp. Imp.</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="RespEscTab">
+        <attribute name="title">
+         <string>Resp. Esc.</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>1221212</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Lista de Filtros</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QListWidget" name="FilterList">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="resizeMode">
+           <enum>QListView::Adjust</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

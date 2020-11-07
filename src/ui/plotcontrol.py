@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_plotControlWrapper(object):
     def setupUi(self, plotControlWrapper):
         plotControlWrapper.setObjectName("plotControlWrapper")
-        plotControlWrapper.resize(327, 60)
+        plotControlWrapper.resize(535, 212)
         self.horizontalLayout = QtWidgets.QHBoxLayout(plotControlWrapper)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout_plot_wrap = QtWidgets.QWidget(plotControlWrapper)
@@ -47,6 +47,20 @@ class Ui_plotControlWrapper(object):
         self.toolButton_plotCol.setIcon(icon)
         self.toolButton_plotCol.setObjectName("toolButton_plotCol")
         self.horizontalLayout_plot.addWidget(self.toolButton_plotCol)
+        self.button_SOS = QtWidgets.QPushButton(self.horizontalLayout_plot_wrap)
+        self.button_SOS.setEnabled(True)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.button_SOS.sizePolicy().hasHeightForWidth())
+        self.button_SOS.setSizePolicy(sizePolicy)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("src/Images/assets/add_SOS.png"),QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.button_SOS.setIcon(icon2)
+        #self.button_SOS.setMaximumSize(QtCore.QSize(23, 22))
+        #self.button_SOS.setFocusPolicy(QtCore.Qt.TabFocus)
+        self.button_SOS.setObjectName("button_SOS")
+        self.horizontalLayout_plot.addWidget(self.button_SOS)
         self.toolButton_plotDel = QtWidgets.QToolButton(self.horizontalLayout_plot_wrap)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("src/Images/assets/trashCan.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -63,6 +77,7 @@ class Ui_plotControlWrapper(object):
         plotControlWrapper.setWindowTitle(_translate("plotControlWrapper", "Form"))
         self.label_plot.setText(_translate("plotControlWrapper", "plotName"))
         self.toolButton_plotCol.setText(_translate("plotControlWrapper", "..."))
+        self.button_SOS.setText(_translate("plotControlWrapper", "..."))
         self.toolButton_plotDel.setText(_translate("plotControlWrapper", "..."))
 
 
