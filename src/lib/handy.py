@@ -59,11 +59,13 @@ def FileCheck(fn):
 
 
 def read_data():
-    df = pd.read_csv("data/last_data.csv", index_col=0)
-    d = df.to_dict("split")
-    d = dict(zip(d["index"], d["data"]))
-    return d
-
+    if FileCheck("data/last_data.csv"):
+        df = pd.read_csv("data/last_data.csv", index_col=0)
+        d = df.to_dict("split")
+        d = dict(zip(d["index"], d["data"]))
+        return d
+    else:
+        return None
 
 __all__ = ['qstr2str', 'change2unit', 'save_filter']
 
