@@ -15,7 +15,7 @@ class Legendre(object):
     # -------------------------------------------------
 
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -69,11 +69,11 @@ class Legendre(object):
                           self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, wc, E, 'LP')
 
-        print("fc:" + str(self.fc) + ",N:" + str(self.N)+",E:"+str(self.E))
+        #print("fc:" + str(self.fc) + ",N:" + str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype = 'lowpass', output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # -------------------------------------------------
     def HP(self,data):
         self.get_params(data)
@@ -81,11 +81,11 @@ class Legendre(object):
                                  self.Ap, self.Aa,analog = True)
         self.calc_NQE(N, wc, E, 'HP')
 
-        print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
+        #print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype='highpass', output='ba')
         self.b = 10**(self.Go/20)*self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
@@ -98,7 +98,7 @@ class Legendre(object):
                                   btype='bandpass', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
@@ -111,13 +111,13 @@ class Legendre(object):
                                   btype='bandstop', analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
-        print(self.b, self.a)
+        #print(self.b, self.a)
 # ----------------------------------------------------
 if __name__ == '__main__':
     prueba = Legendre()
     data = {'N':1,'fpp':1000,'fpm':0,'fam':0,'fap':2000,'Ap':3,
             'Aa':18,'E':0,'Go':5,'Q':'auto'}
     prueba.LP(data)
-    print(prueba.b, prueba.a)
-    print(prueba.zpk)
+    #print(prueba.b, prueba.a)
+    #print(prueba.zpk)
     pass

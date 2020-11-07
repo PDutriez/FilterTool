@@ -19,7 +19,7 @@ class AppStages(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.ui.GraphsWidget.setCurrentIndex(0)
         self.sos = []
-        print('Appstages created')
+
         #MY STUFF
         self.createBodePlotsCanvas()
         self.stages_list = []
@@ -30,7 +30,6 @@ class AppStages(QtWidgets.QWidget):
 
     def receive_stages(self,b,a):
         self.sos = np.array(ss.tf2sos(b,a,pairing='keep_odd'))
-        print(f'b:{b},a:{a}\nsos:{type(self.sos)}')
         for it in range(0,len(self.sos)):
             self.stages_list.append(False)
             tempObject = stageControl(self, self.stages_list,it)
@@ -57,9 +56,6 @@ class AppStages(QtWidgets.QWidget):
                         a = np.poly1d(a)
                         B = np.polymul(B,b)
                         A = np.polymul(A,a)
-                        print(B.c)
-                        print(A.c)
-                        print(ss.tf2sos(B.c, A.c))
                 # self.sos=np.insert(self.sos[0],0,ss.tf2sos(B.c, A.c))
                 # for t in range(0,len(self.stages_list)):
                 #     self.stages_list[t] = False
@@ -105,14 +101,11 @@ class AppStages(QtWidgets.QWidget):
         return sos
 
     def magplot(self, axes, canvas):
-        print(self.stages_list)
         w = np.logspace(np.log10(1), np.log10(self.furthestPZ() * 100/(2*np.pi)), num=10000) * 2 * np.pi
         for i in range(0,len(self.stages_list)):
             if self.stages_list[i]:
                 temp_list = []
                 temp_list.append(self.fix(self.sos[i]))
-                print(self.sos[i])
-                print(self.fix(self.sos[i]))
                 b, a = ss.sos2tf(temp_list)
                 bode = ss.bode(ss.TransferFunction(b, a), w=w)
                 axes.plot(bode[0] / (2 * np.pi), bode[1], label=str(i))
@@ -223,14 +216,14 @@ class AppStages(QtWidgets.QWidget):
     def furthestPZ(self):
         dist = []
         for i in range(0, len(self.stages_list)):
-            #print("SOS",self.sos[i])
+
             temp_list = []
             temp_list.append(self.sos[i])
             b, a = ss.sos2tf(temp_list)
-            #print("b", b, "a", a)
+
             poles = np.roots(a)
             zeros = np.roots(b)
-            #print(poles,zeros)
+
             if len(poles):
                 if len(zeros):
                     dist.append(max(max(abs(poles)), max(abs(zeros))))

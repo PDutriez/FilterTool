@@ -38,7 +38,7 @@ class AppCLass(QtWidgets.QWidget):
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
-        self.ui.FilterList.itemChanged.connect(self.selected_filter)
+        #self.ui.FilterList.itemChanged.connect(self.selected_filter)
         self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
         self.ui.ButtSaveAprox.clicked.connect(self.saveCurrentFilter)
         self.ui.ButtLoadAprox.clicked.connect(self.LoadFilter)
@@ -100,7 +100,7 @@ class AppCLass(QtWidgets.QWidget):
             self.type=None
             self.disableAllAprox()
             self.ui.Filter_Image.clear()
-            print('Filtro Incorrecto')
+            self.showmsg('Filtro Incorrecto')
 
     def CreateNew(self):
         # botón de crear un filtro nuevo
@@ -112,7 +112,7 @@ class AppCLass(QtWidgets.QWidget):
             if not bob.make_filter(new_filter, len(self.filter_list)):
                 self.showmsg(bob.err_msg)
             elif self.identicalTwins(bob):
-                self.showmsg("No se admiten gemelos, aborten...")
+                self.showmsg("Twins not allowed, abort filter")
             else:
                 self.showmsg(bob.name)
 
@@ -264,9 +264,6 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_rdg = self.figure_rdg.add_subplot()
         self.axes_fas = self.figure_fas.add_subplot()
 
-    def selected_filter(self):
-        self.ui.textBrowser.append(("me clickearon"))
-        # print("me clickearon!")
     def showmsg(self,msg):
         self.ui.textBrowser.append(msg)
 
@@ -287,7 +284,6 @@ class AppCLass(QtWidgets.QWidget):
                 self.ui.RespImpTab: (self.axes_imp, self.canvas_imp, self.impPlot),
                 self.ui.RespEscTab: (self.axes_esc, self.canvas_esc, self.escPlot)}
         if w in tabs.keys():
-            print("VAMO BOCA")
             axes, canvas, plotter = tabs[w]
             axes.clear()
         if len(self.filter_list):
@@ -422,7 +418,7 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             poles = np.roots(f.Filtro.a)
             zeros = np.roots(f.Filtro.b)
-            print(poles,zeros)
+
             if len(poles):
                 if len(zeros):
                     dist.append(max(max(abs(poles)), max(abs(zeros))))
@@ -444,7 +440,7 @@ class AppCLass(QtWidgets.QWidget):
             elif filtro == 'Group Delay':
                 lf.append(f.Filtro.fo)
             else:
-                print('Filtro Incorrecto')
+                self.showmsg('Filtro Incorrecto')
         return min(lf)
     def highestFreq(self):
         hf = []
@@ -459,7 +455,7 @@ class AppCLass(QtWidgets.QWidget):
             elif filtro == 'Group Delay':
                 hf.append(f.Filtro.fo)
             else:
-                print('Filtro Incorrecto: '+filtro)
+                self.showmsg('Filtro Incorrecto: '+filtro)
         return max(hf)
 
     def hideAll(self):

@@ -22,7 +22,7 @@ class Bessel(object):
 
     #-------------------------------------------------
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -49,7 +49,7 @@ class Bessel(object):
         self.b,self.a = signal.bessel(self.N, self.fc*2*np.pi, 'low', True, 'ba', norm='delay')
         self.b = 10**(self.Go/20)*self.b
 
-        print(self.b, self.a)
+        #print(self.b, self.a)
     # -------------------------------------------------
     def bessord(self, wo,tol,retGroup,N):
         #normalizamos

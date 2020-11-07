@@ -22,7 +22,7 @@ class Gauss(object):
 
     # -------------------------------------------------
     def get_params(self, data):
-        print(data)
+        #print(data)
         self.N = data['N']
         self.fpp = data['fpp']
         self.fpm = data['fpm']
@@ -51,7 +51,7 @@ class Gauss(object):
         self.b, self.a = self.gauss_tf(self.N,self.fc*2*pi)
         self.b = 10 ** (self.Go / 20) * self.b
 
-        print(self.b, self.a)
+        #print(self.b, self.a)
 
     # -------------------------------------------------
     def Gaussord(self,wo,tol,retGroup,N):
