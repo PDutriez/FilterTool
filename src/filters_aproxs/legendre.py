@@ -29,12 +29,12 @@ class Legendre(object):
 
     # -------------------------------------------------
 
-    def calc_NQE(self, N, fc, E, ft):
+    def calc_NQE(self, N, wc, E, ft):
         if self.N == 0:
             self.N = N
         if self.E == 'auto':
             if self.Q == 'auto':
-                self.fc = fc
+                self.fc = wc/(2*np.pi)
                 self.E = E
             else:
                 self.E = (max(1 / (2 * self.Q), self.calc_Emin(ft)) + self.calc_Emax()) / 2
@@ -47,7 +47,7 @@ class Legendre(object):
             self.E = self.calc_Emax() - self.E * (self.calc_Emax() - Emin) / 100
             self.fc = self.fpp / (self.E ** (self.N))
 
-    # TODO y...
+    # -------------------------------------------------
     def calc_Emin(self, ft):
         frec_norm = {
             'LP': self.fap / self.fpp,
@@ -65,9 +65,9 @@ class Legendre(object):
     def LP(self, data):
         self.get_params(data)
 
-        N, fc, E = legord(self.fpp * (2 * pi), self.fap * (2 * pi),
+        N, wc, E = legord(self.fpp * (2 * pi), self.fap * (2 * pi),
                           self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, E, 'LP')
+        self.calc_NQE(N, wc, E, 'LP')
 
         print("fc:" + str(self.fc) + ",N:" + str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype = 'lowpass', output='ba')
@@ -77,9 +77,9 @@ class Legendre(object):
     # -------------------------------------------------
     def HP(self,data):
         self.get_params(data)
-        N, fc, E = legord(self.fpp*(2*pi), self.fap*(2*pi),
+        N, wc, E = legord(self.fpp*(2*pi), self.fap*(2*pi),
                                  self.Ap, self.Aa,analog = True)
-        self.calc_NQE(N, fc, E, 'HP')
+        self.calc_NQE(N, wc, E, 'HP')
 
         print("fc:"+str(self.fc)+",N:"+str(self.N)+",E:"+str(self.E))
         self.b, self.a = legendre(self.N, self.E, self.fc*(2*pi),btype='highpass', output='ba')
@@ -89,10 +89,10 @@ class Legendre(object):
     # ------------------------------------------------
     def BP(self,data):
         self.get_params(data)
-        N, fc, E = legord([self.fpm*(2*pi),self.fpp*(2*pi)],
+        N, wc, E = legord([self.fpm*(2*pi),self.fpp*(2*pi)],
                                       [self.fam*(2*pi),self.fap*(2*pi)],
                                       self.Ap, self.Aa,analog=True)
-        self.calc_NQE(N, fc,E, 'BP')
+        self.calc_NQE(N, wc, E, 'BP')
 
         self.b, self.a = legendre(self.N, self.E,[self.fam*(2*pi),self.fpp*(2*pi)],
                                   btype='bandpass', analog=True)
@@ -102,10 +102,10 @@ class Legendre(object):
     # ------------------------------------------------
     def BR(self,data):
         self.get_params(data)
-        N, fc, E = legord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
+        N, wc, E = legord([self.fpm * (2 * pi), self.fpp * (2 * pi)],
                         [self.fam * (2 * pi), self.fap * (2 * pi)],
                         self.Ap, self.Aa, analog=True)
-        self.calc_NQE(N, fc, E, 'BR')
+        self.calc_NQE(N, wc, E, 'BR')
 
         self.b, self.a = legendre(self.N, self.E, [self.fam*(2*pi),self.fpp*(2*pi)],
                                   btype='bandstop', analog=True)

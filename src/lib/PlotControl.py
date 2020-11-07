@@ -14,7 +14,7 @@ class plotControl(QWidget, Ui_plotControlWrapper):
         self.label_plot.setText(self.model.name)
         self.checkBox_plot.setChecked(True)
         self.checkBox_plot.stateChanged.connect(self.toggleVisible)
-        #self.toolButton_plotCol.pressed.connect(self.selectColor)
+        self.toolButton_plotCol.pressed.connect(self.selectColor)
         self.toolButton_plotDel.pressed.connect(self.destroyPlot)
         self.button_SOS.pressed.connect(self.openSOS_Window)
         # self.checkBox_plot.setChecked(True)
@@ -27,12 +27,12 @@ class plotControl(QWidget, Ui_plotControlWrapper):
             self.model.setVisible(False)
         self.mainWindow.manage_plot()
 
-#    def selectColor(self):
-
-#        colorDialog = QColorDialog()
-#        color = colorDialog.getColor()
-#        if color.isValid():
-#            self.model.setPlotColor(color)
+    def selectColor(self):
+        colorDialog = QColorDialog()
+        color = colorDialog.getColor()
+        if color.isValid():
+            self.model.setPlotColor(color)
+            self.mainWindow.manage_plot()
 
     def destroyPlot(self):
         self.mainWindow.delete_PlotControlItem(self)

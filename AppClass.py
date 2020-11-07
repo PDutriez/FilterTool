@@ -305,7 +305,10 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b,f.Filtro.a),w=w)
-                axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
+                if f.plotColor is not None:
+                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name,color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(bode[0] / (2 * np.pi), bode[1], label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
@@ -318,7 +321,10 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.a, f.Filtro.b), w=w)
-                axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
+                if f.plotColor is not None:
+                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name,color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
@@ -334,13 +340,21 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 poles = np.roots(f.Filtro.a)
                 zeros = np.roots(f.Filtro.b)
-                axes.plot(np.real(poles), np.imag(poles), 'Xb', label='Poles' + f.name)
-                axes.plot(np.real(zeros), np.imag(zeros), 'or', label='Zeros' + f.name)
+                if f.plotColor is not None:
+                    if len(poles):
+                        axes.plot(np.real(poles), np.imag(poles), 'x', label='Poles' + f.name,color=self.formatColor(f.plotColor))
+                    if len(zeros):
+                        axes.plot(np.real(zeros), np.imag(zeros), 'o', label='Zeros' + f.name,color=self.formatColor(f.plotColor))
+                else:
+                    if len(poles):
+                        axes.plot(np.real(poles), np.imag(poles), 'Xb', label='Poles' + f.name)
+                    if len(zeros):
+                        axes.plot(np.real(zeros), np.imag(zeros), 'or', label='Zeros' + f.name)
         axes.axhline(y=0, color='gray', linewidth=1)
         axes.axvline(x=0, color='gray', linewidth=1)
         d = self.furthestPZ()
-        axes.set_xlim(-d*1.1,d*1.1)
-        axes.set_ylim(-d*1.1,d*1.1)
+        #axes.set_xlim(-d*1.1,d*1.1)
+        #axes.set_ylim(-d*1.1,d*1.1)
         axes.set_xlabel("Real")
         axes.set_ylabel("Imaginary")
         axes.legend(loc='best')
@@ -351,7 +365,10 @@ class AppCLass(QtWidgets.QWidget):
         for f in self.filter_list:
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
-                axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name)
+                if f.plotColor is not None:
+                    axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name,color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Phase [º]')
@@ -362,8 +379,11 @@ class AppCLass(QtWidgets.QWidget):
     def rdgPlot(self, axes, canvas):
         for f in self.filter_list:
             if f.chk:
-                w, gd = ss.group_delay((f.Filtro.b, f.Filtro.a))
-                axes.plot(w/(2 * np.pi), gd, label=f.name)
+                w, gd = ss.group_delay((f.Filtro.b, f.Filtro.a),w=1024)
+                if f.plotColor is not None:
+                    axes.plot(w / (2 * np.pi), gd, label=f.name, color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(w/(2 * np.pi), gd, label=f.name)
         axes.set_xscale('log')
         axes.set_ylabel('Group delay [samples]')
         axes.set_xlabel('Frequency [Hz]')
@@ -376,7 +396,10 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 H = ss.lti(f.Filtro.b,f.Filtro.a)
                 time, resp = H.impulse()
-                axes.plot(time, resp, label=f.name)
+                if f.plotColor is not None:
+                    axes.plot(time, resp, label=f.name,color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         axes.legend(loc='best')
@@ -386,7 +409,10 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 H = ss.lti(f.Filtro.b,f.Filtro.a)
                 time, resp = H.step()
-                axes.plot(time, resp, label=f.name)
+                if f.plotColor is not None:
+                    axes.plot(time, resp, label=f.name,color=self.formatColor(f.plotColor))
+                else:
+                    axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         axes.legend(loc='best')
@@ -543,7 +569,15 @@ class AppCLass(QtWidgets.QWidget):
         #     if it!=4 and it!=6:
         #         self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
 
+    def formatColor(self, Qolor):
+        Qolor = Qolor.getRgb()
+        R = Qolor[0] / 255.0
+        G = Qolor[1] / 255.0
+        B = Qolor[2] / 255.0
+        A = Qolor[3] / 255.0
+        newColor = (R, G, B, A)
 
+        return newColor
 # ------------------------------------------------------------
 if __name__ == '__main__':
     MyFilterToolApp = QtWidgets.QApplication(sys.argv)
