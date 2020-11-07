@@ -2,8 +2,8 @@
 N,5
 Q,auto
 E,auto
-aprox,Butterworth
-ft,BR
+aprox,Aproximación
+ft,Tipo de Filtro
 Go,0.0
 fpp,1001.0
 fpm,68.0

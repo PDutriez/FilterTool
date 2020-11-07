@@ -40,8 +40,16 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
         self.ui.FilterList.itemChanged.connect(self.selected_filter)
         self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
-        # self.ui.ButtSaveAprox.clicked.connect(self.SaveCurrentFilter)
-        # self.ui.ButtLoadAprox.clicked.connect(self.LoadFilter)
+        self.ui.ButtSaveAprox.clicked.connect(self.saveCurrentFilter)
+        self.ui.ButtLoadAprox.clicked.connect(self.LoadFilter)
+
+    def saveCurrentFilter(self):
+        self.showmsg(hand.save_manual(self.parse_specs()))
+    def LoadFilter(self):
+        msg, new_data = hand.load_manual()
+        self.showmsg(msg)
+        if new_data:
+            self.recover(new_data)
 
     def change_ParamInputs(self):
         # la idea es que no muestre todas las fpp... y App... dependiendo del filtro

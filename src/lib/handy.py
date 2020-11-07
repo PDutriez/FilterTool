@@ -1,8 +1,10 @@
 import numpy as np
 from numpy import pi, log10
 import scipy.signal as ss
-
+import os
+import ctypes.wintypes
 import pandas as pd
+from PyQt5.QtWidgets import QFrame, QMessageBox, QFileDialog, QDialog, QColorDialog
 
 
 def save_data(data):
@@ -12,6 +14,50 @@ def save_data(data):
     # pd.DataFrame.from_dict(data=data, orient='columns').to_csv('/data/last_data.csv', header=False)
 
 
+def save_manual(data):
+    df = pd.DataFrame.from_dict(data, orient="index")
+    index = 0
+    while True:
+        if FileCheck('data/filter_save_' + str(index) + '.csv'):
+            index = index + 1
+        else:
+            break
+    df.to_csv('data/filter_save_' + str(index) + '.csv')
+    msg = 'File saved as ' + 'filter_save_' + str(index) + '.csv in Data folder.'
+    return msg
+
+
+def load_manual():
+    CSIDL_PERSONAL = 5  # My Documents
+    SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+    buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+    ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+
+    filterFileName = QFileDialog.getOpenFileName(caption='Select Simulation File...', directory=buf.value,
+                                             filter="CSV Files (*.csv)")
+
+    if len(str(filterFileName)) > 8:  # El usuario no toco "Cancel"
+        print(filterFileName)
+        df = pd.read_csv(filterFileName[0], index_col=0)
+        d = df.to_dict("split")
+        d = dict(zip(d["index"], d["data"]))
+        print(d)
+        msg = "Open" + filterFileName[0]
+    else:
+        d = None
+        msg = 'No file opens'
+    return msg,d
+
+
+def FileCheck(fn):
+    try:
+        open(fn, "r")
+        return 1
+    except IOError:
+        print("Error: File does not appear to exist.")
+        return 0
+
+
 def read_data():
     df = pd.read_csv("data/last_data.csv", index_col=0)
     d = df.to_dict("split")
@@ -19,7 +65,8 @@ def read_data():
     return d
 
 
-__all__ = ['qstr2str','change2unit','save_filter']
+__all__ = ['qstr2str', 'change2unit', 'save_filter']
+
 
 def qstr2str(text):
     """
@@ -35,21 +82,24 @@ def qstr2str(text):
         string = text.toString()
     elif "unicode" in text_type:
         return text
-    else: string = str(text)
+    else:
+        string = str(text)
 
     return str(string)
-# -----------------------------------------------------
-def mixdicts(d_origin,d_source):
 
+
+# -----------------------------------------------------
+def mixdicts(d_origin, d_source):
     if d_origin is None or d_origin == {}:
         d_origin = d_source
     else:
-        for k,v in d_source.items():
+        for k, v in d_source.items():
             if not k in d_origin:
                 d[k] = v
 
+
 # -----------------------------------------------------
-def dB(val, power = False):
+def dB(val, power=False):
     """
     Calcula dB de 'val'
     :param val: valor a calcular
@@ -60,6 +110,8 @@ def dB(val, power = False):
         return 10. * np.log10(val)
     else:
         return 20 * np.log10(val)
+
+
 # -----------------------------------------------------
 def num2unit(value, filt_type):
     """
@@ -70,18 +122,22 @@ def num2unit(value, filt_type):
     elif filt_type == "BR":
         unit_value = -20 * log10(value)
     return unit_value
-#-----------------------------------------------------
-def unit2num(value,filt_type):
+
+
+# -----------------------------------------------------
+def unit2num(value, filt_type):
     """
     Convierte amplitud en dB a escalar
     """
     if filt_type == "BP":
-        lin_val = 1. - 10.**(-value / 20.)
+        lin_val = 1. - 10. ** (-value / 20.)
     elif filt_type == "BR":
         lin_value = 10. ** (-value / 20)
     return value
-#-----------------------------------------------------
-def save_filter(data,new,new_format, convert=True):
+
+
+# -----------------------------------------------------
+def save_filter(data, new, new_format, convert=True):
     """
     Save Filter guarda mi filtro en el diccionario de
     filtros
@@ -91,25 +147,27 @@ def save_filter(data,new,new_format, convert=True):
     if new_format == 'sos':
         data['sos'] = new
     elif new_format == 'zpk':
-       data['zpk'] = [new[0],new[1],new[2]]
+        data['zpk'] = [new[0], new[1], new[2]]
     elif new_format == 'ba':
         b = new[0]
         a = new[1]
-        D = len(b)-len(a)
-        if D > 0: # a > b llename de ceros a
+        D = len(b) - len(a)
+        if D > 0:  # a > b llename de ceros a
             a = np.append(a, np.zeros(D))
-        elif D < 0: # b > a llename de ceros b
+        elif D < 0:  # b > a llename de ceros b
             b = np.append(b, np.zeros(-D))
 
-        #data['N'] = len(b) - 1 #Orden filtro
+        # data['N'] = len(b) - 1 #Orden filtro
         data['ba'] = [np.array(b, dtype=np.complex),
                       np.array(a, dtype=np.complex)]
     if convert:
-        convert_filter(data,new_format)
-#-----------------------------------------------------
-#def convert_filter(data,new_format):
+        convert_filter(data, new_format)
 
-#-----------------------------------------------------
+
+# -----------------------------------------------------
+# def convert_filter(data,new_format):
+
+# -----------------------------------------------------
 def test_N(data):
     """
     Te avisa si el orden es demasiado alto para ser
@@ -121,24 +179,30 @@ def test_N(data):
     else:
         print("N muy alto")
     return ok_N
-#-----------------------------------------------------
+
+
+# -----------------------------------------------------
 def chkLP(data):
     success = False
-    if  data['fap'] > data['fpp']:
+    if data['fap'] > data['fpp']:
         success = True
         msg = "Ok"
     else:
         msg = "Error: fap must be greater than fpp"
     return success, msg
+
+
 # -----------------------------------------------------
 def chkHP(data):
     success = False
-    if  data['fap'] < data['fpp']:
+    if data['fap'] < data['fpp']:
         success = True
         msg = "Ok"
     else:
         msg = "Error: fpp must be greater than fap"
     return success, msg
+
+
 # -----------------------------------------------------
 def chkBP(data):
     success = False
@@ -154,6 +218,8 @@ def chkBP(data):
     else:
         msg = "Error: fpm must be greater than fam"
     return success, msg
+
+
 # -----------------------------------------------------
 def chkBR(data):
     success = False
@@ -169,26 +235,28 @@ def chkBR(data):
             msg = "Error: fap must be greater than fpp"
     else:
         msg = "Error: fpm must be greater than fam"
-    return success,msg
-#-----------------------------------------------------
+    return success, msg
+
+
+# -----------------------------------------------------
 def chkGD(data):
     success = False
     msg = "Ok"
-    if data['tol']>0:
-        if data['fo']>0:
-            if data['retGroup']>0:
-                success =True
+    if data['tol'] > 0:
+        if data['fo'] > 0:
+            if data['retGroup'] > 0:
+                success = True
             else:
                 msg = "Error: review RetGroup"
         else:
             msg = "Error: review Fo"
     else:
         msg = "Error: review tol"
-    return success,msg
+    return success, msg
 
 
-#-----------------------------------------------------
-if __name__=='__main__':
+# -----------------------------------------------------
+if __name__ == '__main__':
     pass
 
 #    pass
