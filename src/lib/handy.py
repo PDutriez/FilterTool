@@ -190,7 +190,7 @@ def chkLP(data):
         success = True
         msg = "Ok"
     else:
-        msg = "Error: fap must be greater than fpp"
+        msg = "Error: fa+ must be greater than fp+"
     return success, msg
 
 
@@ -201,7 +201,7 @@ def chkHP(data):
         success = True
         msg = "Ok"
     else:
-        msg = "Error: fpp must be greater than fap"
+        msg = "Error: fp+ must be greater than fa+"
     return success, msg
 
 
@@ -214,11 +214,11 @@ def chkBP(data):
                 success = True
                 msg = "Ok"
             else:
-                msg = "Error: fpp must be grater than fpm"
+                msg = "Error: fp+ must be grater than fp-"
         else:
-            msg = "Error: fap must be greater than fpp"
+            msg = "Error: fa+ must be greater than fp+"
     else:
-        msg = "Error: fpm must be greater than fam"
+        msg = "Error: fp- must be greater than fa-"
     return success, msg
 
 
@@ -232,11 +232,11 @@ def chkBR(data):
                 success = True
                 msg = "Ok"
             else:
-                msg = "Error: fpp must be grater than fpm"
+                msg = "Error: fp+ must be grater than fp-"
         else:
-            msg = "Error: fap must be greater than fpp"
+            msg = "Error: fa+ must be greater than fp+"
     else:
-        msg = "Error: fpm must be greater than fam"
+        msg = "Error: fp+ must be greater than fa-"
     return success, msg
 
 

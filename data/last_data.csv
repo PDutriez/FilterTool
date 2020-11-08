@@ -1,14 +1,14 @@
 ,0
-N,5
+N,4
 Q,auto
 E,auto
-aprox,Butterworth
-ft,LP
+aprox,Chebyshev 1
+ft,HP
 Go,0.0
-fpp,1005.0
-fpm,68.0
-fap,1400.0
-fam,50.0
+fpp,1600.0
+fpm,1500.0
+fap,2000.0
+fam,1000.0
 Ap,4.0
 Aa,19.0
 tol,2.0

@@ -267,9 +267,22 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_fas = self.figure_fas.add_subplot()
 
     def showmsg(self, msg, color='black'):
-        colormsg = "<span style=\" font-size:8pt; font-weight:600; color:"+color+";\" >"
-        colormsg+=msg
-        colormsg+="</span>"
+        # colormsg = "<span style=\" font-size:8pt; font-weight:600; color:"+color+";\" >"
+        # colormsg+=msg
+        # colormsg+="</span>"
+        colormsg =msg
+        if color=='red':
+            colormsg = "<span style=\" font-size:8pt; font-weight:600; color:" + color + ";\" >[Error]:"
+            colormsg += "</span>" + "<span style=\" font-size:8pt; font-weight:600; color:" + 'black' + ";\" >"
+            colormsg += msg + "</span>"
+        elif color == 'green':
+            colormsg = "<span style=\" font-size:8pt; font-weight:600; color:" + color + ";\" >[Created]:"
+            colormsg += "</span>" + "<span style=\" font-size:8pt; font-weight:600; color:" + 'black' + ";\" >"
+            colormsg += msg + "</span>"
+        elif color == 'blue':
+            colormsg = "<span style=\" font-size:8pt; font-weight:600; color:" + color + ";\" >[Info]:"
+            colormsg += "</span>" + "<span style=\" font-size:8pt; font-weight:600; color:" + 'black' + ";\" >"
+            colormsg += msg + "</span>"
         self.ui.textBrowser.append(colormsg)
 
     def delete_PlotControlItem(self, MrMeeseeks):
