@@ -10,6 +10,7 @@ from src.lib.PlotControl import plotControl
 import numpy as np
 import scipy.signal as ss
 
+
 class AppCLass(QtWidgets.QWidget):
 
     def __init__(self, parent=None):  # instanciamos la clase
@@ -25,7 +26,6 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.label_2.setVisible(False)
         self.ui.CBAmpUnit.setVisible(False)
 
-
         # MY STUFF: cosas que necesito instanciar externas a Qt
         self.createBodePlotsCanvas()
         self.filter_list = []
@@ -38,16 +38,17 @@ class AppCLass(QtWidgets.QWidget):
         # EVENT HANDLER: acciones a partir de la UI
         self.ui.CBFilters.currentIndexChanged.connect(self.change_ParamInputs)
         self.ui.ButtonCreateFilter.clicked.connect(self.CreateNew)
-        #self.ui.FilterList.itemChanged.connect(self.selected_filter)
+        # self.ui.FilterList.itemChanged.connect(self.selected_filter)
         self.ui.GraphsWidget.currentChanged.connect(self.manage_plot)
         self.ui.ButtSaveAprox.clicked.connect(self.saveCurrentFilter)
         self.ui.ButtLoadAprox.clicked.connect(self.LoadFilter)
 
     def saveCurrentFilter(self):
-        self.showmsg(hand.save_manual(self.parse_specs()))
+        self.showmsg(hand.save_manual(self.parse_specs()),'blue')
+
     def LoadFilter(self):
         msg, new_data = hand.load_manual()
-        self.showmsg(msg)
+        self.showmsg(msg,'blue')
         if new_data:
             self.recover(new_data)
 
@@ -60,7 +61,7 @@ class AppCLass(QtWidgets.QWidget):
             if not self.type:
                 self.disableAllAprox()
                 self.enableNormal()
-                self.type=True
+                self.type = True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/LP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'HP':
@@ -68,7 +69,7 @@ class AppCLass(QtWidgets.QWidget):
             if not self.type:
                 self.disableAllAprox()
                 self.enableNormal()
-                self.type=True
+                self.type = True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/HP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BP':
@@ -76,7 +77,7 @@ class AppCLass(QtWidgets.QWidget):
             if not self.type:
                 self.disableAllAprox()
                 self.enableNormal()
-                self.type=True
+                self.type = True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BP.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'BR':
@@ -84,7 +85,7 @@ class AppCLass(QtWidgets.QWidget):
             if not self.type:
                 self.disableAllAprox()
                 self.enableNormal()
-                self.type=True
+                self.type = True
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/BR.png"))
             self.ui.Filter_Image.setScaledContents(True)
         elif filtro == 'Group Delay':
@@ -92,29 +93,30 @@ class AppCLass(QtWidgets.QWidget):
             if self.type or self.type == None:
                 self.disableAllAprox()
                 self.enableBesselGauss()
-                self.type=False
+                self.type = False
             self.ui.Filter_Image.setPixmap(QtGui.QPixmap("src/Images/GD.png"))
             self.ui.Filter_Image.setScaledContents(True)
 
         else:
-            self.type=None
+            self.type = None
             self.disableAllAprox()
             self.ui.Filter_Image.clear()
-            self.showmsg('Filtro Incorrecto')
+            self.showmsg('Filtro Incorrecto','red')
 
     def CreateNew(self):
         # botón de crear un filtro nuevo
         bob = UF.FilterMaker()
         msg = self.inputConditions()
-        if msg != 'ok': self.showmsg(msg)
+        if msg != 'ok':
+            self.showmsg(msg,'red')
         else:
             new_filter = self.parse_specs()  # creamos un nuevo filtro
             if not bob.make_filter(new_filter, len(self.filter_list)):
-                self.showmsg(bob.err_msg)
+                self.showmsg(bob.err_msg,'red')
             elif self.identicalTwins(bob):
-                self.showmsg("Twins not allowed, abort filter")
+                self.showmsg("Twins not allowed, abort filter",'red')
             else:
-                self.showmsg(bob.name)
+                self.showmsg(bob.name,'green')
 
                 self.filter_list.append(bob)  # Lo sumamos a nuestra lista
                 self.manage_plot()
@@ -125,7 +127,6 @@ class AppCLass(QtWidgets.QWidget):
                 self.ui.FilterList.addItem(tempItem)
                 self.ui.FilterList.setItemWidget(tempItem, tempObject)
 
-
     def inputConditions(self):
         if not self.ui.CheckMinOrden.isChecked() and self.ui.NumOrden.value() == 0:
             msg = 'Valor de N no seleccionado'
@@ -133,7 +134,8 @@ class AppCLass(QtWidgets.QWidget):
             msg = 'Valor de E no seleccionado'
         elif not self.ui.CheckQmax.isChecked() and self.ui.SpinBoxQ.value() == 0:
             msg = 'Valor de Qmax no seleccionado'
-        else: msg = 'ok'
+        else:
+            msg = 'ok'
         return msg
 
     def parse_specs(self):
@@ -194,8 +196,8 @@ class AppCLass(QtWidgets.QWidget):
             self.ui.SpinBoxDesnorm.setValue(int(data['E'][0]))
         else:
             self.ui.CheckDesnorm.setChecked(True)
-        #self.ui.CBAprox.setCurrentText((data['aprox'][0]))
-        #self.ui.CBFilters.setCurrentText(data['ft'][0])
+        # self.ui.CBAprox.setCurrentText((data['aprox'][0]))
+        # self.ui.CBFilters.setCurrentText(data['ft'][0])
         self.ui.SpinBoxGain.setValue(float(data['Go'][0]))
         self.ui.SpinBoxFpplus.setValue(float(data['fpp'][0]))
         self.ui.SpinBoxFpminus.setValue(float(data['fpm'][0]))
@@ -264,18 +266,21 @@ class AppCLass(QtWidgets.QWidget):
         self.axes_rdg = self.figure_rdg.add_subplot()
         self.axes_fas = self.figure_fas.add_subplot()
 
-    def showmsg(self,msg):
-        self.ui.textBrowser.append(msg)
+    def showmsg(self, msg, color='black'):
+        colormsg = "<span style=\" font-size:8pt; font-weight:600; color:"+color+";\" >"
+        colormsg+=msg
+        colormsg+="</span>"
+        self.ui.textBrowser.append(colormsg)
 
-    def delete_PlotControlItem(self,MrMeeseeks):
+    def delete_PlotControlItem(self, MrMeeseeks):
         self.filter_list.remove(MrMeeseeks.model)
-        for i in range(0,self.ui.FilterList.count()):
+        for i in range(0, self.ui.FilterList.count()):
             if MrMeeseeks == self.ui.FilterList.itemWidget(self.ui.FilterList.item(i)):
                 self.ui.FilterList.takeItem(i)
         self.manage_plot()
 
     def manage_plot(self):
-        w = self.ui.GraphsWidget.currentWidget() #Wipe it
+        w = self.ui.GraphsWidget.currentWidget()  # Wipe it
         tabs = {self.ui.MagTab: (self.axes_mag, self.canvas_mag, self.magplot),
                 self.ui.PazTab: (self.axes_paz, self.canvas_paz, self.pazPlot),
                 self.ui.AtenTab: (self.axes_ate, self.canvas_ate, self.atePlot),
@@ -294,15 +299,16 @@ class AppCLass(QtWidgets.QWidget):
                 self.ui.FilterList.clear()
             axes.grid(which='both')
             plotter(axes, canvas)
-        else:            canvas.draw()
+        else:
+            canvas.draw()
 
     def magplot(self, axes, canvas):
         w = np.logspace(np.log10(self.lowestFreq() / 10), np.log10(self.highestFreq() * 100), num=10000) * 2 * np.pi
         for f in self.filter_list:
             if f.chk:
-                bode = ss.bode(ss.TransferFunction(f.Filtro.b,f.Filtro.a),w=w)
+                bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
                 if f.plotColor is not None:
-                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name,color=self.formatColor(f.plotColor))
+                    axes.plot(bode[0] / (2 * np.pi), bode[1], label=f.name, color=self.formatColor(f.plotColor))
                 else:
                     axes.plot(bode[0] / (2 * np.pi), bode[1], label=f.name)
         axes.set_xscale('log')
@@ -318,9 +324,9 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.a, f.Filtro.b), w=w)
                 if f.plotColor is not None:
-                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name,color=self.formatColor(f.plotColor))
+                    axes.plot(bode[0] / (2 * np.pi), bode[1], label=f.name, color=self.formatColor(f.plotColor))
                 else:
-                    axes.plot(bode[0] / (2 * np.pi), bode[1],label=f.name)
+                    axes.plot(bode[0] / (2 * np.pi), bode[1], label=f.name)
         axes.set_xscale('log')
         axes.set_xlabel('Frequency [Hz]');
         axes.set_ylabel('Magnitude [dB]')
@@ -329,18 +335,20 @@ class AppCLass(QtWidgets.QWidget):
         canvas.draw()
 
     def pazPlot(self, axes, canvas):
-        #theta = np.linspace(-np.pi, np.pi, 201)
-        #axes.plot(np.sin(theta), np.cos(theta), color='gray', linewidth=0.2)
-        #plt.annotate("ωo", pol2cart(1, np.pi / 4))
+        # theta = np.linspace(-np.pi, np.pi, 201)
+        # axes.plot(np.sin(theta), np.cos(theta), color='gray', linewidth=0.2)
+        # plt.annotate("ωo", pol2cart(1, np.pi / 4))
         for f in self.filter_list:
             if f.chk:
                 poles = np.roots(f.Filtro.a)
                 zeros = np.roots(f.Filtro.b)
                 if f.plotColor is not None:
                     if len(poles):
-                        axes.plot(np.real(poles), np.imag(poles), 'x', label='Poles' + f.name,color=self.formatColor(f.plotColor))
+                        axes.plot(np.real(poles), np.imag(poles), 'x', label='Poles' + f.name,
+                                  color=self.formatColor(f.plotColor))
                     if len(zeros):
-                        axes.plot(np.real(zeros), np.imag(zeros), 'o', label='Zeros' + f.name,color=self.formatColor(f.plotColor))
+                        axes.plot(np.real(zeros), np.imag(zeros), 'o', label='Zeros' + f.name,
+                                  color=self.formatColor(f.plotColor))
                 else:
                     if len(poles):
                         axes.plot(np.real(poles), np.imag(poles), 'Xb', label='Poles' + f.name)
@@ -349,8 +357,8 @@ class AppCLass(QtWidgets.QWidget):
         axes.axhline(y=0, color='gray', linewidth=1)
         axes.axvline(x=0, color='gray', linewidth=1)
         d = self.furthestPZ()
-        #axes.set_xlim(-d*1.1,d*1.1)
-        #axes.set_ylim(-d*1.1,d*1.1)
+        # axes.set_xlim(-d*1.1,d*1.1)
+        # axes.set_ylim(-d*1.1,d*1.1)
         axes.set_xlabel("Real")
         axes.set_ylabel("Imaginary")
         axes.legend(loc='best')
@@ -362,7 +370,7 @@ class AppCLass(QtWidgets.QWidget):
             if f.chk:
                 bode = ss.bode(ss.TransferFunction(f.Filtro.b, f.Filtro.a), w=w)
                 if f.plotColor is not None:
-                    axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name,color=self.formatColor(f.plotColor))
+                    axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name, color=self.formatColor(f.plotColor))
                 else:
                     axes.plot(bode[0] / (2 * np.pi), bode[2], label=f.name)
         axes.set_xscale('log')
@@ -375,11 +383,11 @@ class AppCLass(QtWidgets.QWidget):
     def rdgPlot(self, axes, canvas):
         for f in self.filter_list:
             if f.chk:
-                w, gd = ss.group_delay((f.Filtro.b, f.Filtro.a),w=1024)
+                w, gd = ss.group_delay((f.Filtro.b, f.Filtro.a), w=1024)
                 if f.plotColor is not None:
                     axes.plot(w / (2 * np.pi), gd, label=f.name, color=self.formatColor(f.plotColor))
                 else:
-                    axes.plot(w/(2 * np.pi), gd, label=f.name)
+                    axes.plot(w / (2 * np.pi), gd, label=f.name)
         axes.set_xscale('log')
         axes.set_ylabel('Group delay [samples]')
         axes.set_xlabel('Frequency [Hz]')
@@ -390,29 +398,31 @@ class AppCLass(QtWidgets.QWidget):
     def impPlot(self, axes, canvas):
         for f in self.filter_list:
             if f.chk:
-                H = ss.lti(f.Filtro.b,f.Filtro.a)
+                H = ss.lti(f.Filtro.b, f.Filtro.a)
                 time, resp = H.impulse()
                 if f.plotColor is not None:
-                    axes.plot(time, resp, label=f.name,color=self.formatColor(f.plotColor))
+                    axes.plot(time, resp, label=f.name, color=self.formatColor(f.plotColor))
                 else:
                     axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         axes.legend(loc='best')
         canvas.draw()
+
     def escPlot(self, axes, canvas):
         for f in self.filter_list:
             if f.chk:
-                H = ss.lti(f.Filtro.b,f.Filtro.a)
+                H = ss.lti(f.Filtro.b, f.Filtro.a)
                 time, resp = H.step()
                 if f.plotColor is not None:
-                    axes.plot(time, resp, label=f.name,color=self.formatColor(f.plotColor))
+                    axes.plot(time, resp, label=f.name, color=self.formatColor(f.plotColor))
                 else:
                     axes.plot(time, resp, label=f.name)
         axes.set_xlabel('time')
         axes.set_ylabel('Amplitude')
         axes.legend(loc='best')
         canvas.draw()
+
     def furthestPZ(self):
         dist = []
         for f in self.filter_list:
@@ -427,6 +437,7 @@ class AppCLass(QtWidgets.QWidget):
             elif len(zeros):
                 dist.append(max(abs(zeros)))
         return max(dist)
+
     def lowestFreq(self):
         lf = []
         filtro = self.ui.CBFilters.currentText()
@@ -440,8 +451,9 @@ class AppCLass(QtWidgets.QWidget):
             elif filtro == 'Group Delay':
                 lf.append(f.Filtro.fo)
             else:
-                self.showmsg('Filtro Incorrecto')
+                self.showmsg('Filtro Incorrecto','red')
         return min(lf)
+
     def highestFreq(self):
         hf = []
         filtro = self.ui.CBFilters.currentText()
@@ -455,34 +467,34 @@ class AppCLass(QtWidgets.QWidget):
             elif filtro == 'Group Delay':
                 hf.append(f.Filtro.fo)
             else:
-                self.showmsg('Filtro Incorrecto: '+filtro)
+                self.showmsg('Filtro Incorrecto: ' + filtro,'red')
         return max(hf)
 
     def hideAll(self):
-       self.ui.label_tol.setHidden(True)
-       self.ui.SpinBoxTol.setHidden(True)
-       self.ui.label_ft.setHidden(True)
-       self.ui.SpinBoxFt.setHidden(True)
-       self.ui.label_retgroup.setHidden(True)
-       self.ui.SpinBoxRetGroup.setHidden(True)
+        self.ui.label_tol.setHidden(True)
+        self.ui.SpinBoxTol.setHidden(True)
+        self.ui.label_ft.setHidden(True)
+        self.ui.SpinBoxFt.setHidden(True)
+        self.ui.label_retgroup.setHidden(True)
+        self.ui.SpinBoxRetGroup.setHidden(True)
 
-       self.ui.label_Ap.setHidden(True)
-       self.ui.SpinBoxAp.setHidden(True)
-       self.ui.label_Aa.setHidden(True)
-       self.ui.SpinBoxAa.setHidden(True)
-       self.ui.label_fpm.setHidden(True)
-       self.ui.SpinBoxFpminus.setHidden(True)
-       self.ui.label_fpp.setHidden(True)
-       self.ui.SpinBoxFpplus.setHidden(True)
-       self.ui.label_fap.setHidden(True)
-       self.ui.SpinBoxFaplus.setHidden(True)
-       self.ui.label_fam.setHidden(True)
-       self.ui.SpinBoxFaminus.setHidden(True)
+        self.ui.label_Ap.setHidden(True)
+        self.ui.SpinBoxAp.setHidden(True)
+        self.ui.label_Aa.setHidden(True)
+        self.ui.SpinBoxAa.setHidden(True)
+        self.ui.label_fpm.setHidden(True)
+        self.ui.SpinBoxFpminus.setHidden(True)
+        self.ui.label_fpp.setHidden(True)
+        self.ui.SpinBoxFpplus.setHidden(True)
+        self.ui.label_fap.setHidden(True)
+        self.ui.SpinBoxFaplus.setHidden(True)
+        self.ui.label_fam.setHidden(True)
+        self.ui.SpinBoxFaminus.setHidden(True)
 
-       self.ui.label_Go.setHidden(True)
-       self.ui.SpinBoxGain.setHidden(True)
+        self.ui.label_Go.setHidden(True)
+        self.ui.SpinBoxGain.setHidden(True)
 
-    def showSpecs(self,type):
+    def showSpecs(self, type):
         if type != 'LP' and type != 'HP':
             self.ui.label_fpm.setHidden(False)
             self.ui.SpinBoxFpminus.setHidden(False)
@@ -527,7 +539,6 @@ class AppCLass(QtWidgets.QWidget):
         self.ui.GridSpecs.addWidget(self.ui.label_tol, 2, 2, 1, 1)
         self.ui.GridSpecs.addWidget(self.ui.SpinBoxTol, 2, 3, 1, 1)
 
-
     def disableAllAprox(self):
         self.ui.CBAprox.clear()
         self.ui.CBAprox.addItem('')
@@ -539,7 +550,7 @@ class AppCLass(QtWidgets.QWidget):
         #     self.ui.CBAprox.setItemData(it, variant_disable, QtCore.Qt.UserRole - 1)
 
     def enableNormal(self):
-        while self.ui.CBAprox.count()<6:
+        while self.ui.CBAprox.count() < 6:
             self.ui.CBAprox.addItem('')
         _translate = QtCore.QCoreApplication.translate
         self.ui.CBAprox.setItemText(1, _translate("MainWindow", "Butterworth"))
@@ -554,7 +565,7 @@ class AppCLass(QtWidgets.QWidget):
         # self.ui.CBAprox.setItemData(6, variant_disable, QtCore.Qt.UserRole - 1)
 
     def enableBesselGauss(self):
-        while self.ui.CBAprox.count()<3:
+        while self.ui.CBAprox.count() < 3:
             self.ui.CBAprox.addItem('')
         _translate = QtCore.QCoreApplication.translate
         self.ui.CBAprox.setItemText(1, _translate("MainWindow", "Bessel"))
@@ -574,6 +585,8 @@ class AppCLass(QtWidgets.QWidget):
         newColor = (R, G, B, A)
 
         return newColor
+
+
 # ------------------------------------------------------------
 if __name__ == '__main__':
     MyFilterToolApp = QtWidgets.QApplication(sys.argv)
