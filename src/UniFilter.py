@@ -42,13 +42,15 @@ class FilterMaker(object):
         }
         self.aprox = data['aprox']
         if data['aprox'] not in filtros.keys():
-            self.err_msg = 'ERROR: UniFilter - Aproximación errónea'
+            self.err_msg = 'UniFilter - Aproximación errónea'
         elif data['ft'] == "Tipo de Filtro":
-            self.err_msg = 'ERROR: UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
+            self.err_msg = 'UniFilter - No se selecciono un Tipo de Filtro' + data['ft']
         elif not test_N(data):
-            self.err_msg = 'ERROR: UniFilter - Orden mal cargado'
+            self.err_msg = 'UniFilter - Orden mal cargado'
         elif data['Aa'] < data['Ap']:
-            self.err_msg = 'ERROR: Aa must be greater than Ap'
+            self.err_msg = 'Aa must be greater than Ap'
+        elif data['Ap']==0:
+            self.err_msg = 'Ap must be greater than zero'
         else:  # Llegamos bien
             self.Filtro = filtros[data['aprox']]
             self.msg = data['aprox'] + ' ' + 'created' + ',' + ' ' + data['ft']
