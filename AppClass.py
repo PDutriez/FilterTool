@@ -364,9 +364,9 @@ class AppCLass(QtWidgets.QWidget):
                                   color=self.formatColor(f.plotColor))
                 else:
                     if len(poles):
-                        axes.plot(np.real(poles), np.imag(poles), 'Xb', label='Poles' + f.name)
+                        axes.plot(np.real(poles), np.imag(poles), 'x', label='Poles' + f.name)
                     if len(zeros):
-                        axes.plot(np.real(zeros), np.imag(zeros), 'or', label='Zeros' + f.name)
+                        axes.plot(np.real(zeros), np.imag(zeros), 'o', label='Zeros' + f.name)
         axes.axhline(y=0, color='gray', linewidth=1)
         axes.axvline(x=0, color='gray', linewidth=1)
         d = self.furthestPZ()
