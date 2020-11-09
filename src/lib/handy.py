@@ -226,17 +226,17 @@ def chkBP(data):
 def chkBR(data):
     success = False
     msg = "Ok"
-    if data['fam'] < data['fpm']:
-        if data['fpp'] < data['fap']:
+    if data['fam'] > data['fpm']:
+        if data['fpp'] > data['fap']:
             if data['fpp'] > data['fpm']:
                 success = True
                 msg = "Ok"
             else:
                 msg = "fp+ must be grater than fp-"
         else:
-            msg = "fa+ must be greater than fp+"
+            msg = "fp+ must be greater than fa+"
     else:
-        msg = "fp+ must be greater than fa-"
+        msg = "fa- must be greater than fp-"
     return success, msg
 
 
