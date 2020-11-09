@@ -89,7 +89,7 @@ class Cheby2(object):
         self.calc_NQE(N, wc, 'HP')
 
         #print("fc:" + str(self.fc) + ",N:" + str(self.N))
-        self.b, self.a = cheby2(self.N, self.Ap, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
+        self.b, self.a = cheby2(self.N, self.Aa, self.fc * (2 * pi), btype='highpass', analog=True, output='ba')
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
         #print(self.b, self.a)
@@ -103,7 +103,7 @@ class Cheby2(object):
                          self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, wc, 'BP')
 
-        self.b, self.a = cheby2(self.N, self.Ap, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass',
+        self.b, self.a = cheby2(self.N, self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandpass',
                                 analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)
@@ -117,7 +117,7 @@ class Cheby2(object):
                          self.Ap, self.Aa, analog=True)
         self.calc_NQE(N, wc, 'BR')
 
-        self.b, self.a = cheby2(self.N, self.Ap, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop',
+        self.b, self.a = cheby2(self.N, self.Aa, [self.fam * (2 * pi), self.fpp * (2 * pi)], btype='bandstop',
                                 analog=True)
         self.b = 10 ** (self.Go / 20) * self.b
         # self.z, self.p, self.k = sos2zpk(self.sos)

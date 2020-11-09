@@ -57,7 +57,7 @@ def ln(N):
     return polysub(polyval(poly, b), polyval(poly, a))
 
 
-def legendre(N, E, Wn, btype='lowpass', output='ba'):
+def legendre(N, E, Wn, btype='lowpass', output='ba',analog = False):
     myln = ln(N)
     #myln = (E ** 2) * ln(N) #Cambio necesario por como implementamos la frecuencia
     Wn = asarray(Wn)
