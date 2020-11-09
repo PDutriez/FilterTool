@@ -54,7 +54,7 @@ def FileCheck(fn):
         open(fn, "r")
         return 1
     except IOError:
-        print("Error: File does not appear to exist.")
+        print("File does not appear to exist.")
         return 0
 
 
@@ -190,7 +190,7 @@ def chkLP(data):
         success = True
         msg = "Ok"
     else:
-        msg = "Error: fa+ must be greater than fp+"
+        msg = "fa+ must be greater than fp+"
     return success, msg
 
 
@@ -201,7 +201,7 @@ def chkHP(data):
         success = True
         msg = "Ok"
     else:
-        msg = "Error: fp+ must be greater than fa+"
+        msg = "fp+ must be greater than fa+"
     return success, msg
 
 
@@ -214,11 +214,11 @@ def chkBP(data):
                 success = True
                 msg = "Ok"
             else:
-                msg = "Error: fp+ must be grater than fp-"
+                msg = "fp+ must be grater than fp-"
         else:
-            msg = "Error: fa+ must be greater than fp+"
+            msg = "fa+ must be greater than fp+"
     else:
-        msg = "Error: fp- must be greater than fa-"
+        msg = "fp- must be greater than fa-"
     return success, msg
 
 
@@ -232,11 +232,11 @@ def chkBR(data):
                 success = True
                 msg = "Ok"
             else:
-                msg = "Error: fp+ must be grater than fp-"
+                msg = "fp+ must be grater than fp-"
         else:
-            msg = "Error: fa+ must be greater than fp+"
+            msg = "fa+ must be greater than fp+"
     else:
-        msg = "Error: fp+ must be greater than fa-"
+        msg = "fp+ must be greater than fa-"
     return success, msg
 
 
@@ -249,11 +249,11 @@ def chkGD(data):
             if data['retGroup'] > 0:
                 success = True
             else:
-                msg = "Error: review RetGroup"
+                msg = "review RetGroup"
         else:
-            msg = "Error: review Fo"
+            msg = "review Fo"
     else:
-        msg = "Error: review tol"
+        msg = "review tol"
     return success, msg
 
 
